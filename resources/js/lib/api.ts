@@ -84,6 +84,14 @@ function unwrap<T>(data: any): T {
  * Page Controllers Endpoint Definitions
  */
 export const laravelApi = {
+  // Application Bootstrap & Full Content Hydration from Laravel
+  bootstrap: {
+    getSharedPayload: async (locale?: string): Promise<any> => {
+      const res = await apiClient.get('/api/bootstrap', { params: { locale } });
+      return res.data;
+    },
+  },
+
   // Public Menu & Customer Ordering Page (HomeController)
   home: {
     getList: async (): Promise<any> => {

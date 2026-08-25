@@ -10,23 +10,29 @@ import {
   RoleType 
 } from '../types';
 
+/**
+ * Frontend Placeholders & Initial Skeleton Templates.
+ * All actual live content, catalog items, pricing, inventory ledgers, and configurations
+ * are dynamically hydrated from the Laravel backend (/api/bootstrap and RESTful controller endpoints).
+ */
+
 export const RESTAURANT_SETTINGS: RestaurantSettings = {
-  name: 'The Artisan Wood-Fired Bistro',
-  tagline: 'Authentic Handcrafted Pizzas, Slow-Simmered Pastas & Italian Classics',
-  address: '452 Via Roma, Little Italy, NY 10013',
-  phone: '+1 (555) 234-8901',
+  name: '...',
+  tagline: '...',
+  address: '...',
+  phone: '...',
   currency: '$',
-  tax_rate: 0.08875, // 8.875% NYC tax
-  hours: 'Daily: 11:30 AM – 10:30 PM',
-  cash_policy_notice: 'Pay at Counter: Customers pay in person at the cashier counter. Only authorized cashiers can accept and record payments into the register.',
-  receipt_header: 'THE ARTISAN BISTRO\n452 Via Roma, Little Italy, NY\nTel: +1 (555) 234-8901',
-  receipt_footer: 'GRAZIE MILLE!\nThank you for dining with us.\nPlease retain this ticket for order collection.',
+  tax_rate: 0.08,
+  hours: '...',
+  cash_policy_notice: '...',
+  receipt_header: '...',
+  receipt_footer: '...',
 };
 
 export const INITIAL_USERS: User[] = [
   {
     id: 'usr-1',
-    name: 'Elena Rostova',
+    name: 'Staff Administrator',
     email: 'elena@artisanbistro.com',
     role: 'admin',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
@@ -34,7 +40,7 @@ export const INITIAL_USERS: User[] = [
   },
   {
     id: 'usr-2',
-    name: 'Sophia Rossi',
+    name: 'Cashier Staff',
     email: 'sophia@artisanbistro.com',
     role: 'cashier',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
@@ -42,7 +48,7 @@ export const INITIAL_USERS: User[] = [
   },
   {
     id: 'usr-3',
-    name: 'Luigi Vanni',
+    name: 'Kitchen Cook',
     email: 'luigi@artisanbistro.com',
     role: 'kitchen_staff',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
@@ -118,448 +124,17 @@ export const FIXED_ROLE_PERMISSIONS: RolePermission[] = [
 ];
 
 export const INITIAL_CATEGORIES: Category[] = [
-  { id: 'cat-1', name: 'Wood-Fired Pizzas', sort_order: 1, icon: 'Pizza' },
-  { id: 'cat-2', name: 'Handmade Pastas', sort_order: 2, icon: 'UtensilsCrossed' },
-  { id: 'cat-3', name: 'Antipasti & Salads', sort_order: 3, icon: 'Salad' },
-  { id: 'cat-4', name: 'Dolci & Desserts', sort_order: 4, icon: 'Cake' },
-  { id: 'cat-5', name: 'Vino & Beverages', sort_order: 5, icon: 'Wine' },
+  { id: 'cat-1', name: '...', sort_order: 1, icon: 'Pizza' },
+  { id: 'cat-2', name: '...', sort_order: 2, icon: 'UtensilsCrossed' },
+  { id: 'cat-3', name: '...', sort_order: 3, icon: 'Salad' },
+  { id: 'cat-4', name: '...', sort_order: 4, icon: 'Cake' },
+  { id: 'cat-5', name: '...', sort_order: 5, icon: 'Wine' },
 ];
 
-export const INITIAL_INVENTORY_ITEMS: InventoryItem[] = [
-  { id: 'inv-1', name: 'Caputo 00 Pizza Flour', unit: 'kg', low_stock_threshold: 15, category: 'Dry Goods', cost_per_unit: 2.20 },
-  { id: 'inv-2', name: 'Fior di Latte Mozzarella', unit: 'kg', low_stock_threshold: 8, category: 'Dairy', cost_per_unit: 8.50 },
-  { id: 'inv-3', name: 'San Marzano D.O.P. Tomatoes', unit: 'cans', low_stock_threshold: 20, category: 'Canned', cost_per_unit: 3.10 },
-  { id: 'inv-4', name: 'Fresh Genovese Basil', unit: 'bunches', low_stock_threshold: 5, category: 'Produce', cost_per_unit: 1.50 },
-  { id: 'inv-5', name: 'Prosciutto di Parma 24-Mo', unit: 'kg', low_stock_threshold: 3, category: 'Meat', cost_per_unit: 24.00 },
-  { id: 'inv-6', name: 'Parmigiano Reggiano D.O.P.', unit: 'kg', low_stock_threshold: 4, category: 'Dairy', cost_per_unit: 19.50 },
-  { id: 'inv-7', name: 'Black Truffle Sauce', unit: 'jars', low_stock_threshold: 6, category: 'Specialty', cost_per_unit: 14.00 },
-  { id: 'inv-8', name: 'Savoiardi Ladyfingers', unit: 'packs', low_stock_threshold: 10, category: 'Bakery', cost_per_unit: 4.20 },
-  { id: 'inv-9', name: 'Mascarpone Cheese', unit: 'kg', low_stock_threshold: 5, category: 'Dairy', cost_per_unit: 7.80 },
-  { id: 'inv-10', name: 'Italian Espresso Roast', unit: 'kg', low_stock_threshold: 4, category: 'Beverages', cost_per_unit: 18.00 },
-];
+export const INITIAL_INVENTORY_ITEMS: InventoryItem[] = [];
 
-export const INITIAL_TRANSACTIONS: InventoryTransaction[] = [
-  { id: 'tx-1', inventory_item_id: 'inv-1', inventory_item_name: 'Caputo 00 Pizza Flour', quantity: 50, type: 'restock', reference: 'Opening Stock Inflow', created_at: '2026-08-15T08:00:00Z', notes: 'Initial batch delivery' },
-  { id: 'tx-2', inventory_item_id: 'inv-2', inventory_item_name: 'Fior di Latte Mozzarella', quantity: 24, type: 'restock', reference: 'Dairy Wholesaler Delivery', created_at: '2026-08-15T08:00:00Z' },
-  { id: 'tx-3', inventory_item_id: 'inv-3', inventory_item_name: 'San Marzano D.O.P. Tomatoes', quantity: 60, type: 'restock', reference: 'Italian Import Order #881', created_at: '2026-08-15T08:00:00Z' },
-  { id: 'tx-4', inventory_item_id: 'inv-4', inventory_item_name: 'Fresh Genovese Basil', quantity: 18, type: 'restock', reference: 'Local Organic Farm Delivery', created_at: '2026-08-15T08:00:00Z' },
-  { id: 'tx-5', inventory_item_id: 'inv-5', inventory_item_name: 'Prosciutto di Parma 24-Mo', quantity: 12, type: 'restock', reference: 'Salumeria Import', created_at: '2026-08-15T08:00:00Z' },
-  { id: 'tx-6', inventory_item_id: 'inv-6', inventory_item_name: 'Parmigiano Reggiano D.O.P.', quantity: 15, type: 'restock', reference: 'Cheese Wheel Delivery', created_at: '2026-08-15T08:00:00Z' },
-  { id: 'tx-7', inventory_item_id: 'inv-7', inventory_item_name: 'Black Truffle Sauce', quantity: 10, type: 'restock', reference: 'Umbria Specialty Co', created_at: '2026-08-15T08:00:00Z' },
-  { id: 'tx-8', inventory_item_id: 'inv-8', inventory_item_name: 'Savoiardi Ladyfingers', quantity: 30, type: 'restock', reference: 'Pastry Supply Warehouse', created_at: '2026-08-15T08:00:00Z' },
-  { id: 'tx-9', inventory_item_id: 'inv-9', inventory_item_name: 'Mascarpone Cheese', quantity: 14, type: 'restock', reference: 'Dairy Wholesaler Delivery', created_at: '2026-08-15T08:00:00Z' },
-  { id: 'tx-10', inventory_item_id: 'inv-10', inventory_item_name: 'Italian Espresso Roast', quantity: 10, type: 'restock', reference: 'Roastery Delivery', created_at: '2026-08-15T08:00:00Z' },
-  { id: 'tx-11', inventory_item_id: 'inv-1', inventory_item_name: 'Caputo 00 Pizza Flour', quantity: -3.5, type: 'prep_deduction', reference: 'Order #AB-1001 & AB-1004', created_at: '2026-08-19T14:30:00Z' },
-  { id: 'tx-12', inventory_item_id: 'inv-2', inventory_item_name: 'Fior di Latte Mozzarella', quantity: -2.8, type: 'prep_deduction', reference: 'Order #AB-1001 & AB-1004', created_at: '2026-08-19T14:30:00Z' },
-  { id: 'tx-13', inventory_item_id: 'inv-3', inventory_item_name: 'San Marzano D.O.P. Tomatoes', quantity: -4.0, type: 'prep_deduction', reference: 'Order #AB-1001 & AB-1004', created_at: '2026-08-19T14:30:00Z' },
-];
+export const INITIAL_TRANSACTIONS: InventoryTransaction[] = [];
 
-export const INITIAL_MENU_ITEMS: MenuItem[] = [
-  {
-    id: 'item-1',
-    category_id: 'cat-1',
-    name: 'Margherita D.O.P. Wood-Fired Pizza',
-    description: 'San Marzano D.O.P. tomatoes, fresh Fior di Latte mozzarella, fragrant basil leaves, and extra virgin olive oil on 48h cold fermented dough.',
-    price: 18.50,
-    image: 'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=600&q=80',
-    is_available: true,
-    modifier_groups: [
-      {
-        id: 'mod-size',
-        name: 'Pizza Size',
-        required: true,
-        min_selection: 1,
-        max_selection: 1,
-        options: [
-          { id: 'opt-reg', name: 'Regular (12-inch)', extra_price: 0 },
-          { id: 'opt-large', name: 'Large (16-inch)', extra_price: 6.00 },
-        ],
-      },
-      {
-        id: 'mod-crust',
-        name: 'Crust Preference',
-        required: false,
-        min_selection: 0,
-        max_selection: 1,
-        options: [
-          { id: 'opt-trad', name: 'Neapolitan Traditional', extra_price: 0 },
-          { id: 'opt-crisp', name: 'Extra Crispy Bottom', extra_price: 0 },
-          { id: 'opt-garlic', name: 'Garlic Butter Crust Edge', extra_price: 1.50 },
-        ],
-      },
-      {
-        id: 'mod-extras',
-        name: 'Extra Toppings',
-        required: false,
-        min_selection: 0,
-        max_selection: 4,
-        options: [
-          { id: 'opt-bufala', name: 'Buffalo Mozzarella (+)', extra_price: 3.50 },
-          { id: 'opt-prosciutto', name: 'Prosciutto di Parma (+)', extra_price: 4.50 },
-          { id: 'opt-olives', name: 'Kalamata Olives (+)', extra_price: 2.00 },
-          { id: 'opt-mushrooms', name: 'Roasted Portobello (+)', extra_price: 2.50 },
-        ],
-      },
-    ],
-    recipe: [
-      { inventory_item_id: 'inv-1', quantity_used: 0.25 },
-      { inventory_item_id: 'inv-2', quantity_used: 0.15 },
-      { inventory_item_id: 'inv-3', quantity_used: 0.30 },
-      { inventory_item_id: 'inv-4', quantity_used: 0.20 },
-    ],
-  },
-  {
-    id: 'item-2',
-    category_id: 'cat-1',
-    name: 'Tartufo & Funghi Bianca',
-    description: 'White base with Fior di Latte, roasted wild cremini mushrooms, aged Parmigiano Reggiano, and rich black truffle sauce drizzle.',
-    price: 22.00,
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',
-    is_available: true,
-    modifier_groups: [
-      {
-        id: 'mod-size-2',
-        name: 'Pizza Size',
-        required: true,
-        min_selection: 1,
-        max_selection: 1,
-        options: [
-          { id: 'opt-reg-2', name: 'Regular (12-inch)', extra_price: 0 },
-          { id: 'opt-large-2', name: 'Large (16-inch)', extra_price: 6.50 },
-        ],
-      },
-      {
-        id: 'mod-truffle',
-        name: 'Truffle Finish',
-        required: false,
-        min_selection: 0,
-        max_selection: 1,
-        options: [
-          { id: 'opt-extra-truffle', name: 'Double Truffle Infusion', extra_price: 3.50 },
-          { id: 'opt-chili-honey', name: 'Spicy Hot Honey Drizzle', extra_price: 1.75 },
-        ],
-      },
-    ],
-    recipe: [
-      { inventory_item_id: 'inv-1', quantity_used: 0.25 },
-      { inventory_item_id: 'inv-2', quantity_used: 0.18 },
-      { inventory_item_id: 'inv-6', quantity_used: 0.05 },
-      { inventory_item_id: 'inv-7', quantity_used: 0.15 },
-    ],
-  },
-  {
-    id: 'item-3',
-    category_id: 'cat-1',
-    name: 'Prosciutto e Rucola',
-    description: 'Crispy Neapolitan crust baked with mozzarella, then topped with fresh baby arugula, 24-month aged Prosciutto di Parma, and shaved Parmigiano.',
-    price: 23.50,
-    image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80',
-    is_available: true,
-    modifier_groups: [
-      {
-        id: 'mod-balsamic',
-        name: 'Glaze & Additions',
-        required: false,
-        min_selection: 0,
-        max_selection: 2,
-        options: [
-          { id: 'opt-balsamic-glaze', name: 'Modena Balsamic Reduction', extra_price: 1.50 },
-          { id: 'opt-burrata-crown', name: 'Fresh Burrata Ball Center', extra_price: 5.00 },
-        ],
-      },
-    ],
-    recipe: [
-      { inventory_item_id: 'inv-1', quantity_used: 0.25 },
-      { inventory_item_id: 'inv-2', quantity_used: 0.14 },
-      { inventory_item_id: 'inv-5', quantity_used: 0.12 },
-      { inventory_item_id: 'inv-6', quantity_used: 0.04 },
-    ],
-  },
-  {
-    id: 'item-4',
-    category_id: 'cat-2',
-    name: 'Tagliatelle al Ragù Bolognese',
-    description: 'Silky house-extruded egg tagliatelle ribbons tossed in slow-cooked 8-hour beef & pork bolognese ragù, finished with 24-month Parmigiano.',
-    price: 21.00,
-    image: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=600&q=80',
-    is_available: true,
-    modifier_groups: [
-      {
-        id: 'mod-pasta-size',
-        name: 'Portion Size',
-        required: true,
-        min_selection: 1,
-        max_selection: 1,
-        options: [
-          { id: 'opt-primo', name: 'Standard Primo', extra_price: 0 },
-          { id: 'opt-abbondante', name: 'Abbondante (+30% Pasta & Meat)', extra_price: 5.50 },
-        ],
-      },
-      {
-        id: 'mod-cheese',
-        name: 'Cheese Top',
-        required: false,
-        min_selection: 0,
-        max_selection: 1,
-        options: [
-          { id: 'opt-extra-parm', name: 'Extra Parmigiano Reggiano', extra_price: 2.00 },
-          { id: 'opt-stracciatella', name: 'Creamy Stracciatella Dollop', extra_price: 3.50 },
-        ],
-      },
-    ],
-    recipe: [
-      { inventory_item_id: 'inv-1', quantity_used: 0.18 },
-      { inventory_item_id: 'inv-3', quantity_used: 0.25 },
-      { inventory_item_id: 'inv-6', quantity_used: 0.05 },
-    ],
-  },
-  {
-    id: 'item-5',
-    category_id: 'cat-3',
-    name: 'Burrata Pugliese & Heirloom Caprese',
-    description: 'Creamy whole burrata heart, sweet heirloom tomatoes, cold-pressed Sicilian olive oil, aged balsamic drops, and warm rosemary focaccia bread.',
-    price: 16.50,
-    image: 'https://images.unsplash.com/photo-1592417817098-8f3d6910985c?auto=format&fit=crop&w=600&q=80',
-    is_available: true,
-    modifier_groups: [],
-    recipe: [
-      { inventory_item_id: 'inv-2', quantity_used: 0.20 },
-      { inventory_item_id: 'inv-4', quantity_used: 0.10 },
-    ],
-  },
-  {
-    id: 'item-6',
-    category_id: 'cat-4',
-    name: 'Traditional Nonna Tiramisù',
-    description: 'Espresso-soaked Savoiardi ladyfingers layered with velvety zabaglione mascarpone cream and dusted with Valrhona dark cocoa powder.',
-    price: 9.50,
-    image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=600&q=80',
-    is_available: true,
-    modifier_groups: [
-      {
-        id: 'mod-tiramisu-side',
-        name: 'Add Gelato Scoop',
-        required: false,
-        min_selection: 0,
-        max_selection: 1,
-        options: [
-          { id: 'opt-pistachio-gelato', name: 'Bronte Pistachio Gelato', extra_price: 3.50 },
-          { id: 'opt-fior-gelato', name: 'Fior di Latte Gelato', extra_price: 3.00 },
-        ],
-      },
-    ],
-    recipe: [
-      { inventory_item_id: 'inv-8', quantity_used: 0.50 },
-      { inventory_item_id: 'inv-9', quantity_used: 0.12 },
-      { inventory_item_id: 'inv-10', quantity_used: 0.03 },
-    ],
-  },
-  {
-    id: 'item-7',
-    category_id: 'cat-5',
-    name: 'San Pellegrino Sparkling Mineral Water (750ml)',
-    description: 'Imported crisp natural sparkling water from the Italian Alps.',
-    price: 6.00,
-    image: 'https://images.unsplash.com/photo-1560512823-829485b8bf24?auto=format&fit=crop&w=600&q=80',
-    is_available: true,
-    modifier_groups: [
-      {
-        id: 'mod-water-style',
-        name: 'Serving Style',
-        required: false,
-        min_selection: 0,
-        max_selection: 1,
-        options: [
-          { id: 'opt-lemon-slice', name: 'With Fresh Lemon Wedge', extra_price: 0 },
-          { id: 'opt-lime-slice', name: 'With Fresh Lime Wedge', extra_price: 0 },
-        ],
-      },
-    ],
-    recipe: [],
-  },
-];
+export const INITIAL_ORDERS: Order[] = [];
 
-export const INITIAL_ORDERS: Order[] = [
-  {
-    id: 'ord-101',
-    order_number: 'AB-1001',
-    status: 'preparing',
-    type: 'dine_in',
-    table_number: 'Table 4',
-    customer_name: 'David Vance',
-    customer_phone: '+1 (555) 349-8811',
-    notes: 'Please cut pizza into 8 slices. Extra napkins.',
-    idempotency_key: 'idem-key-1001',
-    tracking_token: 'OT-98F12A',
-    items: [
-      {
-        id: 'oi-1',
-        menu_item_id: 'item-1',
-        name: 'Margherita D.O.P. Wood-Fired Pizza',
-        quantity: 1,
-        unit_price: 18.50,
-        total_price: 22.00,
-        selected_modifiers: [
-          { group_name: 'Pizza Size', option_name: 'Regular (12-inch)', extra_price: 0 },
-          { group_name: 'Extra Toppings', option_name: 'Buffalo Mozzarella (+)', extra_price: 3.50 },
-        ],
-      },
-      {
-        id: 'oi-2',
-        menu_item_id: 'item-6',
-        name: 'Traditional Nonna Tiramisù',
-        quantity: 2,
-        unit_price: 9.50,
-        total_price: 19.00,
-        selected_modifiers: [],
-      },
-    ],
-    subtotal: 41.00,
-    tax_total: 3.64,
-    total: 44.64,
-    payments: [
-      {
-        id: 'pay-1',
-        order_id: 'ord-101',
-        amount: 44.64,
-        tendered: 50.00,
-        change_returned: 5.36,
-        method: 'cash',
-        cashier_id: 'usr-2',
-        cashier_name: 'Sophia Rossi',
-        created_at: '2026-08-19T18:45:00Z',
-        notes: 'Paid $50 cash at counter. $5.36 change returned.',
-      },
-    ],
-    created_at: '2026-08-19T18:42:10Z',
-    updated_at: '2026-08-19T18:45:00Z',
-  },
-  {
-    id: 'ord-102',
-    order_number: 'AB-1002',
-    status: 'pending',
-    type: 'takeaway',
-    customer_name: 'Claire Jenkins',
-    customer_phone: '+1 (555) 772-9903',
-    notes: 'Will pick up in 15 minutes. Cash payment at counter.',
-    idempotency_key: 'idem-key-1002',
-    tracking_token: 'OT-44B71C',
-    items: [
-      {
-        id: 'oi-3',
-        menu_item_id: 'item-2',
-        name: 'Tartufo & Funghi Bianca',
-        quantity: 1,
-        unit_price: 22.00,
-        total_price: 28.50,
-        selected_modifiers: [
-          { group_name: 'Pizza Size', option_name: 'Large (16-inch)', extra_price: 6.50 },
-        ],
-      },
-      {
-        id: 'oi-4',
-        menu_item_id: 'item-7',
-        name: 'San Pellegrino Sparkling Mineral Water (750ml)',
-        quantity: 1,
-        unit_price: 6.00,
-        total_price: 6.00,
-        selected_modifiers: [
-          { group_name: 'Serving Style', option_name: 'With Fresh Lemon Wedge', extra_price: 0 },
-        ],
-      },
-    ],
-    subtotal: 34.50,
-    tax_total: 3.06,
-    total: 37.56,
-    payments: [],
-    created_at: '2026-08-19T19:05:22Z',
-    updated_at: '2026-08-19T19:05:22Z',
-  },
-  {
-    id: 'ord-103',
-    order_number: 'AB-1003',
-    status: 'ready',
-    type: 'dine_in',
-    table_number: 'Table 9',
-    customer_name: 'Robert Miller',
-    customer_phone: '+1 (555) 662-1140',
-    notes: 'Celebrating anniversary. Candle on dessert if possible.',
-    idempotency_key: 'idem-key-1003',
-    tracking_token: 'OT-72D98E',
-    items: [
-      {
-        id: 'oi-5',
-        menu_item_id: 'item-4',
-        name: 'Tagliatelle al Ragù Bolognese',
-        quantity: 2,
-        unit_price: 21.00,
-        total_price: 49.00,
-        selected_modifiers: [
-          { group_name: 'Cheese Top', option_name: 'Creamy Stracciatella Dollop', extra_price: 3.50 },
-        ],
-      },
-    ],
-    subtotal: 49.00,
-    tax_total: 4.35,
-    total: 53.35,
-    payments: [
-      {
-        id: 'pay-2',
-        order_id: 'ord-103',
-        amount: 30.00,
-        tendered: 30.00,
-        change_returned: 0.00,
-        method: 'cash',
-        cashier_id: 'usr-2',
-        cashier_name: 'Sophia Rossi',
-        created_at: '2026-08-19T18:20:00Z',
-        notes: 'Deposit paid $30. Uncollected balance: $23.35',
-      },
-    ],
-    created_at: '2026-08-19T18:15:00Z',
-    updated_at: '2026-08-19T18:35:00Z',
-  },
-  {
-    id: 'ord-104',
-    order_number: 'AB-1004',
-    status: 'completed',
-    type: 'takeaway',
-    customer_name: 'Angela Myers',
-    customer_phone: '+1 (555) 881-2299',
-    notes: '',
-    idempotency_key: 'idem-key-1004',
-    tracking_token: 'OT-11E55F',
-    items: [
-      {
-        id: 'oi-6',
-        menu_item_id: 'item-3',
-        name: 'Prosciutto e Rucola',
-        quantity: 1,
-        unit_price: 23.50,
-        total_price: 25.00,
-        selected_modifiers: [
-          { group_name: 'Glaze & Additions', option_name: 'Modena Balsamic Reduction', extra_price: 1.50 },
-        ],
-      },
-    ],
-    subtotal: 25.00,
-    tax_total: 2.22,
-    total: 27.22,
-    payments: [
-      {
-        id: 'pay-3',
-        order_id: 'ord-104',
-        amount: 27.22,
-        tendered: 30.00,
-        change_returned: 2.78,
-        method: 'cash',
-        cashier_id: 'usr-2',
-        cashier_name: 'Sophia Rossi',
-        created_at: '2026-08-19T17:50:00Z',
-        notes: 'Exact cash tendered. Change: $2.78',
-      },
-    ],
-    created_at: '2026-08-19T17:30:00Z',
-    updated_at: '2026-08-19T18:00:00Z',
-  },
-];
+export const INITIAL_MENU_ITEMS: MenuItem[] = [];

@@ -44,6 +44,17 @@ class HomeController extends Controller
     }
 
     /**
+     * API JSON Bootstrap Payload (All restaurant content, menu, settings, categories, inventory, translations from backend).
+     */
+    public function bootstrap(Request $request): JsonResponse
+    {
+        $locale = $this->getEffectiveLocale($request);
+        $payload = RestaurantDataService::getSharedPayload($locale);
+
+        return response()->json($payload);
+    }
+
+    /**
      * API JSON listing of active menu categories and available dishes (CRUD list).
      */
     public function list(Request $request): JsonResponse

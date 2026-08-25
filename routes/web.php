@@ -35,6 +35,8 @@ Route::controller(AuthController::class)->group(function () {
 // Public Customer Menu & Ordering Page (HomeController)
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'index')->name('home');
+    Route::get('/api/bootstrap', 'bootstrap')->name('api.bootstrap');
+    Route::get('/api/shared-payload', 'bootstrap')->name('api.shared-payload');
     Route::get('/list', 'list')->name('home.list');
     Route::get('/create', 'create')->name('home.create');
     Route::post('/store', 'store')->name('home.store');

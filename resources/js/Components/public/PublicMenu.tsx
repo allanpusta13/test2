@@ -43,6 +43,7 @@ export const PublicMenu: React.FC = () => {
     setActiveSurface,
     setIsCartOpen,
     cart,
+    isLoadingContent,
   } = useRestaurant();
 
   const [activeCategoryId, setActiveCategoryId] = useState<string>('all');
@@ -382,7 +383,21 @@ export const PublicMenu: React.FC = () => {
 
         {/* Menu Items Grid */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-          {filteredItems.length === 0 ? (
+          {isLoadingContent ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <div key={i} className="rounded-3xl bg-stone-900/60 border border-stone-800 p-5 space-y-4 animate-pulse">
+                  <div className="h-48 w-full bg-stone-800 rounded-2xl" />
+                  <div className="space-y-2">
+                    <div className="h-5 bg-stone-800 rounded w-2/3" />
+                    <div className="h-3.5 bg-stone-800/60 rounded w-full" />
+                    <div className="h-3.5 bg-stone-800/60 rounded w-4/5" />
+                  </div>
+                  <div className="h-9 bg-stone-800 rounded-xl w-full" />
+                </div>
+              ))}
+            </div>
+          ) : filteredItems.length === 0 ? (
             <div className="py-20 text-center space-y-3">
               <div className="w-14 h-14 rounded-full bg-stone-900 text-stone-500 mx-auto flex items-center justify-center">
                 <Search className="w-6 h-6" />

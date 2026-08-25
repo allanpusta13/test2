@@ -137,6 +137,7 @@ interface RestaurantContextType {
   setSelectedDishForCustomizer: (item: MenuItem | null) => void;
 
   // Laravel Backend API Integration
+  isLoadingContent: boolean;
   backendStatus: 'connected' | 'offline' | 'checking';
   apiBaseUrl: string;
   isSyncing: boolean;
@@ -265,6 +266,9 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [selectedDishForCustomizer, setSelectedDishForCustomizer] = useState<MenuItem | null>(null);
 
   // Laravel Backend API Integration State
+  const [isLoadingContent, setIsLoadingContent] = useState<boolean>(
+    !inertiaProps.menuItems || inertiaProps.menuItems.length === 0
+  );
   const [backendStatus, setBackendStatus] = useState<'connected' | 'offline' | 'checking'>('connected');
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
@@ -295,6 +299,8 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           setTranslations(data.translations);
         }
       }
+      // Re-hydrate backend payload for new language
+      await syncFromBackend(newLocale);
     } catch (e) {
       console.warn('Locale update fetch failed, state updated locally.', e);
     }
@@ -309,25 +315,34 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   // Sync Live Data from Laravel Backend
-  const syncFromBackend = async () => {
+  const syncFromBackend = async (targetLocale?: string) => {
     setIsSyncing(true);
+    const activeLoc = targetLocale || locale;
     try {
-      const response = await fetch(`/api/restaurant/data?locale=${locale}`);
+      const response = await fetch(`/api/bootstrap?locale=${activeLoc}`, {
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      });
       if (response.ok) {
         const data = await response.json();
-        if (data.categories) setCategories(data.categories);
-        if (data.menuItems) setMenuItems(data.menuItems);
-        if (data.inventory) setInventoryItems(data.inventory);
-        if (data.transactions) setInventoryTransactions(data.transactions);
-        if (data.orders) setOrders(data.orders);
-        if (data.users) setUsers(data.users);
+        if (data.categories && data.categories.length > 0) setCategories(data.categories);
+        if (data.menuItems && data.menuItems.length > 0) setMenuItems(data.menuItems);
+        if (data.inventory && data.inventory.length > 0) setInventoryItems(data.inventory);
+        if (data.transactions && data.transactions.length > 0) setInventoryTransactions(data.transactions);
+        if (data.orders && data.orders.length > 0) setOrders(data.orders);
+        if (data.users && data.users.length > 0) setUsers(data.users);
         if (data.settings) setSettings(data.settings);
-        if (data.translations) setTranslations(data.translations);
+        if (data.translations && Object.keys(data.translations).length > 0) setTranslations(data.translations);
+        if (data.routes) setRoutes(data.routes);
+        if (data.locales) setLocales(data.locales);
         
         const now = new Date().toLocaleTimeString();
         setLastSyncTime(now);
         setBackendStatus('connected');
         setIsSyncing(false);
+        setIsLoadingContent(false);
 
         return {
           success: true,
@@ -344,6 +359,7 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       }
     } catch (err: any) {
       setIsSyncing(false);
+      setIsLoadingContent(false);
       return {
         success: false,
         message: err.message || 'An error occurred during backend sync',
@@ -351,8 +367,10 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   };
 
-  // Check session on mount
+  // Mount effect: bootstrap live data & check session
   useEffect(() => {
+    syncFromBackend();
+
     const checkSession = async () => {
       try {
         const res = await laravelApi.auth.getUser();
@@ -930,6 +948,7 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setIsCheckoutOpen,
         selectedDishForCustomizer,
         setSelectedDishForCustomizer,
+        isLoadingContent,
         backendStatus,
         apiBaseUrl,
         isSyncing,
