@@ -428,23 +428,26 @@ export const AdminLayout: React.FC = () => {
             {/* Right: Network status & quick actions */}
             <div className="flex items-center gap-2">
               
-              {/* Laravel Backend Integration Modal Trigger */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsLaravelModalOpen(true)}
-                className={`h-8 px-2.5 text-xs gap-1.5 rounded-xl border ${
-                  backendStatus === 'connected'
-                    ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
-                    : 'border-stone-800 text-stone-300 hover:text-stone-100 hover:border-amber-500/40'
-                }`}
-                title="Configure and sync with Laravel backend API"
-              >
-                <Server className={`size-3.5 ${backendStatus === 'connected' ? 'text-emerald-400' : 'text-amber-400'}`} />
-                <span className="hidden sm:inline font-mono">
-                  {backendStatus === 'connected' ? 'Laravel: Live' : 'Laravel API'}
-                </span>
-              </Button>
+              {/* Laravel Backend Integration Modal Trigger (Admin Only) */}
+              {currentUser?.role === 'admin' && (
+                <Button
+                  id="admin-laravel-integration-btn"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsLaravelModalOpen(true)}
+                  className={`h-8 px-2.5 text-xs gap-1.5 rounded-xl border ${
+                    backendStatus === 'connected'
+                      ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
+                      : 'border-stone-800 text-stone-300 hover:text-stone-100 hover:border-amber-500/40'
+                  }`}
+                  title="Configure and sync with Laravel backend API (Admin Only)"
+                >
+                  <Server className={`size-3.5 ${backendStatus === 'connected' ? 'text-emerald-400' : 'text-amber-400'}`} />
+                  <span className="hidden sm:inline font-mono">
+                    {backendStatus === 'connected' ? 'Laravel: Live' : 'Laravel API'}
+                  </span>
+                </Button>
+              )}
 
               {/* POS Network Status / Offline Simulator */}
               <Button

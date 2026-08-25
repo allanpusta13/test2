@@ -31,6 +31,7 @@ import {
 
 export const LaravelIntegrationDialog: React.FC = () => {
   const {
+    currentUser,
     backendStatus,
     apiBaseUrl,
     isSyncing,
@@ -39,12 +40,53 @@ export const LaravelIntegrationDialog: React.FC = () => {
     setIsLaravelModalOpen,
     syncFromBackend,
     testBackendConnection,
+    requestStaffAccess,
   } = useRestaurant();
 
   const [isTesting, setIsTesting] = useState(false);
   const [testResult, setTestResult] = useState<{ ok: boolean; latencyMs: number; error?: string } | null>(null);
   const [syncFeedback, setSyncFeedback] = useState<{ success: boolean; message: string; counts?: any } | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  // If user is not authenticated or not an admin, restrict access
+  if (isLaravelModalOpen && (!currentUser || currentUser.role !== 'admin')) {
+    return (
+      <Dialog open={isLaravelModalOpen} onOpenChange={setIsLaravelModalOpen}>
+        <DialogContent className="max-w-md bg-stone-900 border-stone-800 text-stone-100 p-6 rounded-3xl space-y-4">
+          <DialogHeader className="text-center space-y-2">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 mx-auto flex items-center justify-center">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <DialogTitle className="text-lg font-black text-stone-100">
+              Administrator Access Required
+            </DialogTitle>
+            <DialogDescription className="text-xs text-stone-400">
+              The Laravel Backend Integration and Database Synchronization tools are restricted to Administrators only.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="pt-2 flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setIsLaravelModalOpen(false)}
+              className="flex-1 border-stone-800 text-stone-300 hover:bg-stone-800"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setIsLaravelModalOpen(false);
+                requestStaffAccess('admin', 'menu', 'Please sign in with administrator credentials to access Laravel Integration.');
+              }}
+              className="flex-1 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold"
+            >
+              Sign In as Admin
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   const handleCopy = (text: string, key: string) => {
     navigator.clipboard.writeText(text);

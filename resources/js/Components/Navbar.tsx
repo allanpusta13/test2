@@ -171,23 +171,26 @@ export const Navbar: React.FC = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Laravel API Connection Trigger */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsLaravelModalOpen(true)}
-            className={`h-8 px-2 text-[11px] gap-1.5 rounded-xl border ${
-              backendStatus === 'connected'
-                ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
-                : 'border-stone-800 text-stone-400 hover:text-stone-200 hover:border-amber-500/40'
-            }`}
-            title="Laravel 13 Data Bridge"
-          >
-            <Server className={`w-3.5 h-3.5 ${backendStatus === 'connected' ? 'text-emerald-400' : 'text-amber-400'}`} />
-            <span className="hidden md:inline font-mono">
-              {backendStatus === 'connected' ? 'Laravel 13' : 'Backend'}
-            </span>
-          </Button>
+          {/* Laravel API Connection Trigger (Admin Only) */}
+          {currentUser?.role === 'admin' && (
+            <Button
+              id="nav-laravel-integration-btn"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsLaravelModalOpen(true)}
+              className={`h-8 px-2 text-[11px] gap-1.5 rounded-xl border ${
+                backendStatus === 'connected'
+                  ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
+                  : 'border-stone-800 text-stone-400 hover:text-stone-200 hover:border-amber-500/40'
+              }`}
+              title="Laravel 13 Data Bridge (Admin Only)"
+            >
+              <Server className={`w-3.5 h-3.5 ${backendStatus === 'connected' ? 'text-emerald-400' : 'text-amber-400'}`} />
+              <span className="hidden md:inline font-mono">
+                {backendStatus === 'connected' ? 'Laravel 13' : 'Backend'}
+              </span>
+            </Button>
+          )}
 
           {/* Offline Mode & Sync Indicator */}
           <div className="hidden lg:flex items-center gap-1.5">
