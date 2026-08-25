@@ -61,6 +61,7 @@ import { AdminMenu } from './AdminMenu';
 import { AdminInventory } from './AdminInventory';
 import { AdminUsers } from './AdminUsers';
 import { AdminRoles } from './AdminRoles';
+import { AuthWall } from '../auth/AuthWall';
 
 export const AdminLayout: React.FC = () => {
   const { 
@@ -80,8 +81,15 @@ export const AdminLayout: React.FC = () => {
     offlineQueue,
     syncOfflineQueue,
     backendStatus,
-    setIsLaravelModalOpen
+    setIsLaravelModalOpen,
+    logout,
+    quickLogin,
   } = useRestaurant();
+
+  // If user is not authenticated, display full Auth Wall requiring login
+  if (!currentUser) {
+    return <AuthWall moduleName="Restaurant Backoffice & POS" />;
+  }
 
   // Metrics for badges
   const pendingPrepCount = orders.filter(o => o.status === 'confirmed' || o.status === 'preparing').length;
@@ -352,9 +360,9 @@ export const AdminLayout: React.FC = () => {
                 {users.map(u => (
                   <DropdownMenuItem
                     key={u.id}
-                    onClick={() => setCurrentUser(u)}
+                    onClick={() => quickLogin(u.role, u.email)}
                     className={`flex items-center justify-between p-2 rounded-lg cursor-pointer text-xs ${
-                      currentUser?.id === u.id ? 'bg-amber-500/15 text-amber-300 font-bold' : 'text-stone-300'
+                      currentUser?.id === u.id ? 'bg-amber-500/15 text-amber-300 font-bold' : 'text-stone-300 hover:text-stone-100 hover:bg-stone-800'
                     }`}
                   >
                     <div className="flex items-center gap-2">
@@ -373,17 +381,14 @@ export const AdminLayout: React.FC = () => {
                   </DropdownMenuItem>
                 ))}
 
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="bg-stone-800" />
                 
                 <DropdownMenuItem
-                  onClick={() => {
-                    setCurrentUser(null);
-                    setActiveSurface('public_menu');
-                  }}
-                  className="flex items-center gap-2 p-2 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg cursor-pointer"
+                  onClick={logout}
+                  className="flex items-center gap-2 p-2 text-xs text-red-400 hover:text-red-300 hover:bg-red-950/40 rounded-lg cursor-pointer"
                 >
                   <LogOut className="size-3.5" />
-                  <span>Exit to Guest Mode</span>
+                  <span>Sign Out (Laravel Logout)</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

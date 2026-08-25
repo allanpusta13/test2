@@ -19,6 +19,53 @@ final class User extends Authenticatable implements FilamentUser, HasAppAuthenti
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_CASHIER = 'cashier';
+    public const ROLE_KITCHEN_STAFF = 'kitchen_staff';
+
+    /**
+     * The primary key type and incrementing settings.
+     */
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'id',
+        'name',
+        'email',
+        'password',
+        'role',
+        'avatar',
+    ];
+
+    /**
+     * Role checks helper methods.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isCashier(): bool
+    {
+        return $this->role === self::ROLE_CASHIER;
+    }
+
+    public function isKitchenStaff(): bool
+    {
+        return $this->role === self::ROLE_KITCHEN_STAFF;
+    }
+
+    public function hasRole(string ...$roles): bool
+    {
+        return in_array($this->role, $roles, true);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

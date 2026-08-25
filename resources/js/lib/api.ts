@@ -289,6 +289,47 @@ export const laravelApi = {
     },
   },
 
+  // Authentication & Session (Laravel Auth)
+  auth: {
+    login: async (credentials: { email: string; password: string; remember?: boolean }): Promise<{
+      success: boolean;
+      message: string;
+      user: User;
+      role: string;
+      intended_surface?: { surface: string; tab: string; title: string };
+    }> => {
+      const res = await apiClient.post('/login', credentials);
+      return res.data;
+    },
+    quickLogin: async (options: { role?: string; email?: string }): Promise<{
+      success: boolean;
+      message: string;
+      user: User;
+      role: string;
+      intended_surface?: { surface: string; tab: string; title: string };
+    }> => {
+      const res = await apiClient.post('/auth/quick-login', options);
+      return res.data;
+    },
+    logout: async (): Promise<{ success: boolean; message: string }> => {
+      const res = await apiClient.post('/logout');
+      return res.data;
+    },
+    getUser: async (): Promise<{
+      success: boolean;
+      authenticated: boolean;
+      user: User | null;
+      role?: string | null;
+    }> => {
+      const res = await apiClient.get('/auth/user');
+      return res.data;
+    },
+    getDemoAccounts: async (): Promise<any> => {
+      const res = await apiClient.get('/auth/demo-accounts');
+      return res.data;
+    },
+  },
+
   // Settings Controller
   settings: {
     getSettings: async (): Promise<RestaurantSettings> => {

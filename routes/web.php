@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PosController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\TrackerController;
@@ -19,6 +20,17 @@ use Illuminate\Support\Facades\Route;
 | Web Routes (Laravel 13 + Inertia - RESTful CRUD Controller Endpoints)
 |--------------------------------------------------------------------------
 */
+
+// Authentication & Staff Access Routes (Laravel Auth)
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/login', 'showLoginForm')->name('login');
+    Route::post('/login', 'login')->name('login.post');
+    Route::post('/logout', 'logout')->name('logout');
+    Route::get('/auth/user', 'user')->name('auth.user');
+    Route::get('/api/user', 'user')->name('api.user');
+    Route::post('/auth/quick-login', 'quickLogin')->name('auth.quick-login');
+    Route::get('/auth/demo-accounts', 'showLoginForm')->name('auth.demo-accounts');
+});
 
 // Public Customer Menu & Ordering Page (HomeController)
 Route::controller(HomeController::class)->group(function () {

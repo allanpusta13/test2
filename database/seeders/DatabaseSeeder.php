@@ -17,7 +17,9 @@ final class DatabaseSeeder extends Seeder
             [
                 'id' => 'usr-1',
                 'name' => 'Elena Rostova',
-                'password' => bcrypt('password'),
+                'role' => User::ROLE_ADMIN,
+                'avatar' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+                'password' => bcrypt('password123'),
             ]
         );
 
@@ -26,7 +28,9 @@ final class DatabaseSeeder extends Seeder
             [
                 'id' => 'usr-2',
                 'name' => 'Sophia Rossi',
-                'password' => bcrypt('password'),
+                'role' => User::ROLE_CASHIER,
+                'avatar' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
+                'password' => bcrypt('password123'),
             ]
         );
 
@@ -35,7 +39,9 @@ final class DatabaseSeeder extends Seeder
             [
                 'id' => 'usr-3',
                 'name' => 'Luigi Vanni',
-                'password' => bcrypt('password'),
+                'role' => User::ROLE_KITCHEN_STAFF,
+                'avatar' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
+                'password' => bcrypt('password123'),
             ]
         );
 

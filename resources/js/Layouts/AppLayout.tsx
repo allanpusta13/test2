@@ -7,6 +7,7 @@ import DishCustomizerDialog from '../Components/public/DishCustomizerDialog';
 import EscPosReceiptModal from '../Components/shared/EscPosReceiptModal';
 import OrderDetailsDialog from '../Components/shared/OrderDetailsDialog';
 import LaravelIntegrationDialog from '../Components/admin/LaravelIntegrationDialog';
+import LoginDialog from '../Components/auth/LoginDialog';
 import { useRestaurant } from '../Context/RestaurantContext';
 
 interface AppLayoutProps {
@@ -49,6 +50,7 @@ export default function AppLayout({ title = 'Artisan POS & Kitchen', children }:
       <EscPosReceiptModal order={receiptModalOrder} onClose={() => setReceiptModalOrder(null)} />
       <OrderDetailsDialog order={viewingOrder} onClose={() => setViewingOrder(null)} />
       <LaravelIntegrationDialog isOpen={isLaravelModalOpen} onClose={() => setIsLaravelModalOpen(false)} />
+      <LoginDialog />
     </div>
   );
 }

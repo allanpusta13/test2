@@ -10,6 +10,7 @@ import { CheckoutDialog } from './Components/public/CheckoutDialog';
 import { EscPosReceiptModal } from './Components/shared/EscPosReceiptModal';
 import { OrderDetailsDialog } from './Components/shared/OrderDetailsDialog';
 import { LaravelIntegrationDialog } from './Components/admin/LaravelIntegrationDialog';
+import { LoginDialog } from './Components/auth/LoginDialog';
 
 const AppContent: React.FC = () => {
   const { activeSurface } = useRestaurant();
@@ -33,6 +34,7 @@ const AppContent: React.FC = () => {
       <EscPosReceiptModal />
       <OrderDetailsDialog />
       <LaravelIntegrationDialog />
+      <LoginDialog />
     </div>
   );
 };

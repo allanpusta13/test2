@@ -58,6 +58,16 @@ interface RestaurantContextType {
   rolesPermissions: RolePermission[];
   hasPermission: (permCode: string) => boolean;
 
+  // Authentication & Staff Access Modal
+  isAuthModalOpen: boolean;
+  setIsAuthModalOpen: (open: boolean) => void;
+  authRedirectContext: { surface?: AppSurface; tab?: AdminView; reason?: string } | null;
+  setAuthRedirectContext: (ctx: { surface?: AppSurface; tab?: AdminView; reason?: string } | null) => void;
+  requestStaffAccess: (surface?: AppSurface, tab?: AdminView, reason?: string) => boolean;
+  login: (email: string, password: string, remember?: boolean) => Promise<{ success: boolean; message: string; user: User; role: RoleType }>;
+  quickLogin: (role?: RoleType, email?: string) => Promise<{ success: boolean; message: string; user: User; role: RoleType }>;
+  logout: () => Promise<void>;
+
   // Menu
   categories: Category[];
   setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
@@ -165,16 +175,25 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     inertiaProps.settings || RESTAURANT_SETTINGS
   );
   
-  // Default staff user from Inertia or fallback
+  // Default staff user from Inertia or stored session (default null = guest)
   const initialUserList = inertiaProps.users && inertiaProps.users.length > 0 
     ? inertiaProps.users 
     : INITIAL_USERS;
     
-  const [currentUser, setCurrentUser] = useState<User | null>(
-    inertiaProps.auth?.user || initialUserList[0]
-  );
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    if (inertiaProps.auth?.user) return inertiaProps.auth.user;
+    try {
+      const stored = localStorage.getItem('laravel_auth_user');
+      if (stored) return JSON.parse(stored);
+    } catch (e) {}
+    return null;
+  });
   const [users, setUsers] = useState<User[]>(initialUserList);
   
+  // Auth Dialog & Gate Context
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authRedirectContext, setAuthRedirectContext] = useState<{ surface?: AppSurface; tab?: AdminView; reason?: string } | null>(null);
+
   const rolesPermissions = inertiaProps.rolesPermissions && inertiaProps.rolesPermissions.length > 0 
     ? inertiaProps.rolesPermissions 
     : FIXED_ROLE_PERMISSIONS;
@@ -329,6 +348,149 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         success: false,
         message: err.message || 'An error occurred during backend sync',
       };
+    }
+  };
+
+  // Check session on mount
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const res = await laravelApi.auth.getUser();
+        if (res.authenticated && res.user) {
+          setCurrentUser(res.user);
+          localStorage.setItem('laravel_auth_user', JSON.stringify(res.user));
+        }
+      } catch (e) {
+        // Fallback to local session storage
+      }
+    };
+    checkSession();
+  }, []);
+
+  // Staff Portal Access Request (Auth Gate)
+  const requestStaffAccess = (surface: AppSurface = 'admin', tab?: AdminView, reason?: string): boolean => {
+    if (currentUser) {
+      setActiveSurface(surface);
+      if (tab) setActiveAdminTab(tab);
+      return true;
+    }
+    setAuthRedirectContext({
+      surface,
+      tab: tab || 'pos',
+      reason: reason || 'Staff authentication is required to access operations and register tools.'
+    });
+    setIsAuthModalOpen(true);
+    return false;
+  };
+
+  // Laravel Authentication Actions
+  const login = async (email: string, password: string, remember: boolean = true) => {
+    try {
+      const res = await laravelApi.auth.login({ email, password, remember });
+      if (res.success && res.user) {
+        setCurrentUser(res.user);
+        localStorage.setItem('laravel_auth_user', JSON.stringify(res.user));
+        
+        // Route to requested tab or default for role
+        const targetTab = authRedirectContext?.tab || (res.user.role === 'kitchen_staff' ? 'kitchen' : 'pos');
+        setActiveSurface('admin');
+        setActiveAdminTab(targetTab as AdminView);
+        setIsAuthModalOpen(false);
+        setAuthRedirectContext(null);
+
+        return {
+          success: true,
+          message: res.message,
+          user: res.user,
+          role: res.role as RoleType,
+        };
+      }
+      return {
+        success: false,
+        message: res.message || 'Login failed',
+        user: null as any,
+        role: null as any,
+      };
+    } catch (err: any) {
+      // Fallback for offline or direct demo credentials
+      const matched = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (matched && (password === 'password123' || password === 'password' || password.length >= 4)) {
+        setCurrentUser(matched);
+        localStorage.setItem('laravel_auth_user', JSON.stringify(matched));
+        const targetTab = authRedirectContext?.tab || (matched.role === 'kitchen_staff' ? 'kitchen' : 'pos');
+        setActiveSurface('admin');
+        setActiveAdminTab(targetTab as AdminView);
+        setIsAuthModalOpen(false);
+        setAuthRedirectContext(null);
+        return {
+          success: true,
+          message: `Authenticated as ${matched.name}`,
+          user: matched,
+          role: matched.role,
+        };
+      }
+      throw new Error(err.response?.data?.message || err.message || 'Invalid credentials');
+    }
+  };
+
+  const quickLogin = async (role: RoleType = 'admin', email?: string) => {
+    try {
+      const res = await laravelApi.auth.quickLogin({ role, email });
+      if (res.success && res.user) {
+        setCurrentUser(res.user);
+        localStorage.setItem('laravel_auth_user', JSON.stringify(res.user));
+        
+        const targetTab = authRedirectContext?.tab || (res.user.role === 'kitchen_staff' ? 'kitchen' : 'pos');
+        setActiveSurface('admin');
+        setActiveAdminTab(targetTab as AdminView);
+        setIsAuthModalOpen(false);
+        setAuthRedirectContext(null);
+
+        return {
+          success: true,
+          message: res.message,
+          user: res.user,
+          role: res.role as RoleType,
+        };
+      }
+      return {
+        success: false,
+        message: res.message || 'Quick login failed',
+        user: null as any,
+        role: null as any,
+      };
+    } catch (err: any) {
+      const matched = email 
+        ? users.find(u => u.email.toLowerCase() === email.toLowerCase())
+        : users.find(u => u.role === role);
+      const targetUser = matched || users[0];
+      setCurrentUser(targetUser);
+      localStorage.setItem('laravel_auth_user', JSON.stringify(targetUser));
+      const targetTab = authRedirectContext?.tab || (targetUser.role === 'kitchen_staff' ? 'kitchen' : 'pos');
+      setActiveSurface('admin');
+      setActiveAdminTab(targetTab as AdminView);
+      setIsAuthModalOpen(false);
+      setAuthRedirectContext(null);
+      return {
+        success: true,
+        message: `Signed in as ${targetUser.name}`,
+        user: targetUser,
+        role: targetUser.role,
+      };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await laravelApi.auth.logout();
+    } catch (err) {
+      console.warn('Backend logout error', err);
+    } finally {
+      setCurrentUser(null);
+      localStorage.removeItem('laravel_auth_user');
+      localStorage.removeItem('laravel_auth_token');
+      setActiveSurface('public_menu');
+      setAuthRedirectContext(null);
     }
   };
 
@@ -712,6 +874,14 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setUsers,
         rolesPermissions,
         hasPermission,
+        isAuthModalOpen,
+        setIsAuthModalOpen,
+        authRedirectContext,
+        setAuthRedirectContext,
+        requestStaffAccess,
+        login,
+        quickLogin,
+        logout,
         categories,
         setCategories,
         addCategory,

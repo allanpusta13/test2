@@ -10,7 +10,12 @@ import {
   ChefHat, 
   Server,
   Languages,
-  Check
+  Check,
+  Lock,
+  LogOut,
+  ShieldCheck,
+  Calculator,
+  UserCheck
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -44,6 +49,11 @@ export const Navbar: React.FC = () => {
     setIsCartOpen,
     backendStatus,
     setIsLaravelModalOpen,
+    isAuthModalOpen,
+    setIsAuthModalOpen,
+    requestStaffAccess,
+    quickLogin,
+    logout,
   } = useRestaurant();
 
   const cartTotalQty = cart.reduce((sum, i) => sum + i.quantity, 0);
@@ -107,7 +117,7 @@ export const Navbar: React.FC = () => {
 
           <button
             id="nav-admin-panel"
-            onClick={() => setActiveSurface('admin')}
+            onClick={() => requestStaffAccess('admin', 'pos', 'Please authenticate with your staff credentials to access operations.')}
             className={`px-3 py-1.5 rounded-xl transition cursor-pointer flex items-center gap-1.5 ${
               activeSurface === 'admin'
                 ? 'bg-amber-500 text-stone-950 font-bold shadow-sm'
@@ -116,6 +126,9 @@ export const Navbar: React.FC = () => {
           >
             <ChefHat className="w-3.5 h-3.5" />
             <span>{t('app.nav.backoffice', {}, 'Restaurant Operations')}</span>
+            {!currentUser && (
+              <span className="w-2 h-2 rounded-full bg-amber-400/80 animate-pulse ml-0.5" />
+            )}
           </button>
         </nav>
 
@@ -226,92 +239,101 @@ export const Navbar: React.FC = () => {
             </Button>
           )}
 
-          {/* Auth & Role Switcher */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8 sm:h-9 px-2 sm:px-2.5 rounded-xl border-stone-800 gap-2 bg-stone-900/80">
-                <Avatar className="w-5 h-5 sm:w-6 sm:h-6">
-                  {currentUser?.avatar ? (
-                    <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
-                  ) : (
-                    <AvatarFallback className="text-[10px] bg-amber-500 text-stone-950 font-bold">G</AvatarFallback>
-                  )}
-                </Avatar>
-                <div className="text-left hidden lg:block">
-                  <p className="text-xs font-bold text-stone-100 leading-tight">
-                    {currentUser ? currentUser.name.split(' ')[0] : t('app.roles.guest', {}, 'Guest')}
-                  </p>
-                  <p className="text-[10px] text-amber-400 font-mono leading-none">
-                    {currentUser ? t(`app.roles.${currentUser.role}`, {}, currentUser.role.replace('_', ' ')) : t('app.roles.guest', {}, 'Customer')}
-                  </p>
-                </div>
-              </Button>
-            </DropdownMenuTrigger>
+          {/* Auth & Role Switcher / Sign In Button */}
+          {currentUser ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8 sm:h-9 px-2 sm:px-2.5 rounded-xl border-stone-800 gap-2 bg-stone-900/80 hover:border-amber-500/40">
+                  <Avatar className="w-5 h-5 sm:w-6 sm:h-6 border border-stone-700">
+                    {currentUser?.avatar ? (
+                      <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+                    ) : (
+                      <AvatarFallback className="text-[10px] bg-amber-500 text-stone-950 font-bold">
+                        {currentUser.name[0]}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  <div className="text-left hidden lg:block">
+                    <p className="text-xs font-bold text-stone-100 leading-tight">
+                      {currentUser.name.split(' ')[0]}
+                    </p>
+                    <p className="text-[10px] text-amber-400 font-mono leading-none capitalize">
+                      {t(`app.roles.${currentUser.role}`, {}, currentUser.role.replace('_', ' '))}
+                    </p>
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end" className="w-64 p-2 bg-stone-900 border-stone-800">
-              <DropdownMenuLabel>
-                <div className="flex items-center justify-between">
-                  <span>{t('users.title', {}, 'Staff Roles')}</span>
-                  <Badge variant="outline" className="text-[9px] font-mono border-amber-500/40 text-amber-400">Laravel Auth</Badge>
-                </div>
-                <p className="text-[10px] text-stone-400 font-normal mt-0.5">
-                  Simulate role-gated access (RBAC)
-                </p>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
+              <DropdownMenuContent align="end" className="w-64 p-2 bg-stone-900 border-stone-800 text-stone-100 shadow-xl rounded-2xl">
+                <DropdownMenuLabel>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs">{currentUser.name}</span>
+                    <Badge variant="outline" className="text-[9px] font-mono border-amber-500/40 text-amber-400">
+                      Laravel Auth
+                    </Badge>
+                  </div>
+                  <p className="text-[10px] text-stone-400 font-normal mt-0.5">
+                    {currentUser.email}
+                  </p>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-stone-800" />
 
-              {/* Seeded Staff Roles */}
-              {users.map(user => (
-                <DropdownMenuItem
-                  key={user.id}
-                  onClick={() => setCurrentUser(user)}
-                  className={`flex items-center justify-between p-2 rounded-xl cursor-pointer ${
-                    currentUser?.id === user.id ? 'bg-amber-500/15 text-amber-300' : ''
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Avatar className="w-7 h-7">
-                      <AvatarImage src={user.avatar} />
-                      <AvatarFallback>{user.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-xs font-bold text-stone-100">{user.name}</p>
-                      <p className="text-[10px] text-stone-400 capitalize">{t(`app.roles.${user.role}`, {}, user.role.replace('_', ' '))}</p>
+                <div className="px-2 py-1 text-[10px] uppercase tracking-wider font-semibold text-stone-400">
+                  Switch Staff Role
+                </div>
+
+                {/* Seeded Staff Roles */}
+                {users.map(user => (
+                  <DropdownMenuItem
+                    key={user.id}
+                    onClick={() => quickLogin(user.role, user.email)}
+                    className={`flex items-center justify-between p-2 rounded-xl cursor-pointer text-xs ${
+                      currentUser?.id === user.id ? 'bg-amber-500/15 text-amber-300 font-semibold' : 'text-stone-300 hover:text-stone-100 hover:bg-stone-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Avatar className="w-6 h-6 border border-stone-700">
+                        <AvatarImage src={user.avatar} />
+                        <AvatarFallback className="text-[10px]">{user.name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-xs font-medium text-stone-100">{user.name}</p>
+                        <p className="text-[10px] text-stone-400 capitalize">
+                          {t(`app.roles.${user.role}`, {}, user.role.replace('_', ' '))}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  {currentUser?.id === user.id && (
-                    <Badge variant="amber" className="text-[9px] py-0 px-1">Active</Badge>
-                  )}
+                    {currentUser?.id === user.id && (
+                      <Badge variant="outline" className="text-[9px] py-0 px-1.5 border-amber-500/50 text-amber-300">
+                        Active
+                      </Badge>
+                    )}
+                  </DropdownMenuItem>
+                ))}
+
+                <DropdownMenuSeparator className="bg-stone-800" />
+
+                {/* Sign Out */}
+                <DropdownMenuItem
+                  onClick={logout}
+                  className="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer text-xs text-red-400 hover:text-red-300 hover:bg-red-950/40"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="font-semibold">Sign Out (Laravel Logout)</span>
                 </DropdownMenuItem>
-              ))}
-
-              <DropdownMenuSeparator />
-
-              {/* Public Customer / Guest option */}
-              <DropdownMenuItem
-                onClick={() => {
-                  setCurrentUser(null);
-                  setActiveSurface('public_menu');
-                }}
-                className={`flex items-center justify-between p-2 rounded-xl cursor-pointer ${
-                  currentUser === null ? 'bg-amber-500/15 text-amber-300' : ''
-                }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-full bg-stone-800 text-stone-300 flex items-center justify-center text-xs font-bold">
-                    G
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-stone-100">{t('app.roles.guest', {}, 'Public Guest')}</p>
-                    <p className="text-[10px] text-stone-400">Anonymous Storefront Customer</p>
-                  </div>
-                </div>
-                {currentUser === null && (
-                  <Badge variant="amber" className="text-[9px] py-0 px-1">Active</Badge>
-                )}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAuthModalOpen(true)}
+              className="h-8 sm:h-9 px-3 rounded-xl border-amber-500/40 bg-amber-500/10 hover:bg-amber-500 text-amber-300 hover:text-stone-950 font-bold text-xs gap-1.5 transition-all shadow-sm cursor-pointer"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Staff Sign In</span>
+            </Button>
+          )}
 
         </div>
       </div>
