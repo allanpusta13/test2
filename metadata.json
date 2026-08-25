@@ -1,0 +1,6 @@
+{
+  "name": "Restaurant Ordering and POS",
+  "description": "Single-restaurant ordering and POS system with public customer storefront, order tracking, role-gated admin panel, inventory ledger, KDS, and ESC/POS receipt bridge built with shadcn/ui.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

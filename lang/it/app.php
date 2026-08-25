@@ -1,0 +1,68 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'name' => 'The Artisan Wood-Fired Bistro',
+    'tagline' => 'Autentiche Pizze Artigianali, Paste Fresche e Classici Italiani',
+    'nav' => [
+        'menu' => 'Menu Digitale',
+        'track_order' => 'Segui Ordine',
+        'pos' => 'Terminale Cassa POS',
+        'kitchen' => 'Display Cucina KDS',
+        'orders' => 'Registro Ordini',
+        'menu_mgmt' => 'Catalogo Menu',
+        'inventory' => 'Magazzino & Scorte',
+        'staff' => 'Personale & Ruoli',
+        'backoffice' => 'Gestione Ristorante',
+        'customer_storefront' => 'Area Clienti',
+    ],
+    'roles' => [
+        'guest' => 'Ospite / Cliente',
+        'cashier' => 'Cassiere',
+        'kitchen_staff' => 'Personale Cucina',
+        'admin' => 'Amministratore',
+    ],
+    'status' => [
+        'pending' => 'In Attesa',
+        'preparing' => 'In Preparazione / Forno',
+        'ready' => 'Pronto per il Ritiro',
+        'completed' => 'Completato & Saldato',
+        'cancelled' => 'Annullato',
+    ],
+    'payment_status' => [
+        'unpaid' => 'Non Saldato (Cassa)',
+        'partially_paid' => 'Parzialmente Saldato',
+        'paid' => 'Saldato',
+    ],
+    'common' => [
+        'search' => 'Cerca...',
+        'filter' => 'Filtra',
+        'all' => 'Tutti gli Articoli',
+        'view' => 'Visualizza',
+        'edit' => 'Modifica',
+        'delete' => 'Elimina',
+        'save' => 'Salva Modifiche',
+        'cancel' => 'Annulla',
+        'close' => 'Chiudi',
+        'actions' => 'Azioni',
+        'total' => 'Totale',
+        'subtotal' => 'Subtotale',
+        'tax' => 'IVA / Tasse',
+        'qty' => 'Qtà',
+        'price' => 'Prezzo',
+        'status' => 'Stato',
+        'date' => 'Data e Ora',
+        'notes' => 'Note',
+        'offline_banner' => 'Modalità Offline attiva. Le azioni sono in coda e verranno sincronizzate con Laravel.',
+        'language' => 'Lingua',
+        'currency' => '$',
+        'powered_by' => 'Alimentato da Laravel 13 + Inertia + React + shadcn/ui',
+    ],
+    'surfaces' => [
+        'public_menu' => 'Menu Clienti',
+        'public_tracker' => 'Monitor Ordine',
+        'admin' => 'Operazioni Ristorante',
+    ],
+    'cash_notice' => 'Pagamento alla Cassa: I clienti pagano di persona al banco cassa. Solo i cassieri autorizzati possono registrare i pagamenti.',
+];

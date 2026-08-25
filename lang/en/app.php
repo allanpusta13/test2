@@ -1,0 +1,68 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'name' => 'The Artisan Wood-Fired Bistro',
+    'tagline' => 'Authentic Handcrafted Pizzas, Slow-Simmered Pastas & Italian Classics',
+    'nav' => [
+        'menu' => 'Digital Menu',
+        'track_order' => 'Track Order',
+        'pos' => 'POS Terminal',
+        'kitchen' => 'Kitchen KDS',
+        'orders' => 'Order Directory',
+        'menu_mgmt' => 'Menu Catalog',
+        'inventory' => 'Stock & Ledger',
+        'staff' => 'Staff & RBAC',
+        'backoffice' => 'Backoffice Suite',
+        'customer_storefront' => 'Customer Storefront',
+    ],
+    'roles' => [
+        'guest' => 'Public Guest',
+        'cashier' => 'Cashier',
+        'kitchen_staff' => 'Kitchen Staff',
+        'admin' => 'Admin / Manager',
+    ],
+    'status' => [
+        'pending' => 'Pending Confirmation',
+        'preparing' => 'In Oven / Preparing',
+        'ready' => 'Ready for Pickup / Serving',
+        'completed' => 'Completed & Settled',
+        'cancelled' => 'Cancelled / Voided',
+    ],
+    'payment_status' => [
+        'unpaid' => 'Unpaid (Counter)',
+        'partially_paid' => 'Partially Paid',
+        'paid' => 'Paid in Full',
+    ],
+    'common' => [
+        'search' => 'Search...',
+        'filter' => 'Filter',
+        'all' => 'All Items',
+        'view' => 'View',
+        'edit' => 'Edit',
+        'delete' => 'Delete',
+        'save' => 'Save Changes',
+        'cancel' => 'Cancel',
+        'close' => 'Close',
+        'actions' => 'Actions',
+        'total' => 'Total',
+        'subtotal' => 'Subtotal',
+        'tax' => 'Tax',
+        'qty' => 'Qty',
+        'price' => 'Price',
+        'status' => 'Status',
+        'date' => 'Date & Time',
+        'notes' => 'Notes',
+        'offline_banner' => 'Working in Offline Mode. Actions are queued and will automatically sync with Laravel.',
+        'language' => 'Language',
+        'currency' => '$',
+        'powered_by' => 'Powered by Laravel 13 + Inertia + React + shadcn/ui',
+    ],
+    'surfaces' => [
+        'public_menu' => 'Customer Menu',
+        'public_tracker' => 'Live Tracker',
+        'admin' => 'Restaurant Operations',
+    ],
+    'cash_notice' => 'Pay at Counter: Customers pay in person at the cashier counter. Only authorized cashiers can accept and record payments into the register.',
+];
