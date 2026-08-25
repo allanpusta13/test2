@@ -58,6 +58,10 @@ export const AdminMenu: React.FC = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isCategoryManagerOpen, setIsCategoryManagerOpen] = useState(false);
 
+  const menuCategories = useMemo(() => {
+    return categories.filter(c => c.type === 'menu' || !c.type || c.type === 'both');
+  }, [categories]);
+
   // Form fields for editing/creating
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -544,7 +548,7 @@ export const AdminMenu: React.FC = () => {
         >
           All Categories ({menuItems.length})
         </button>
-        {categories.map(cat => {
+        {menuCategories.map(cat => {
           const count = menuItems.filter(i => i.category_id === cat.id).length;
           return (
             <button
@@ -706,7 +710,7 @@ export const AdminMenu: React.FC = () => {
                       <SelectValue placeholder="Select Category" />
                     </SelectTrigger>
                     <SelectContent>
-                      {categories.map(c => (
+                      {menuCategories.map(c => (
                         <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                       ))}
                     </SelectContent>
@@ -1128,6 +1132,7 @@ export const AdminMenu: React.FC = () => {
       <CategoryManagerDialog
         open={isCategoryManagerOpen}
         onOpenChange={setIsCategoryManagerOpen}
+        defaultScope="menu"
       />
 
     </div>

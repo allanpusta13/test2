@@ -28,35 +28,112 @@ class RestaurantDataService
     public static function getCategories(): array
     {
         return [
+            // Menu Categories
             [
                 'id' => 'cat-1',
                 'name' => 'Wood-Fired Pizzas',
+                'type' => 'menu',
                 'sort_order' => 1,
                 'icon' => 'Pizza',
+                'description' => 'Neapolitan handcrafted pizzas baked in wood-fired oven',
             ],
             [
                 'id' => 'cat-2',
                 'name' => 'Handmade Pastas',
+                'type' => 'menu',
                 'sort_order' => 2,
                 'icon' => 'UtensilsCrossed',
+                'description' => 'Fresh house-extruded pasta dishes and slow-cooked sauces',
             ],
             [
                 'id' => 'cat-3',
                 'name' => 'Antipasti & Salads',
+                'type' => 'menu',
                 'sort_order' => 3,
                 'icon' => 'Salad',
+                'description' => 'Artisanal Italian starters, burrata, and fresh greens',
             ],
             [
                 'id' => 'cat-4',
                 'name' => 'Dolci & Desserts',
+                'type' => 'menu',
                 'sort_order' => 4,
                 'icon' => 'Cake',
+                'description' => 'Authentic Italian pastries, tiramisù, and sweet specialties',
             ],
             [
                 'id' => 'cat-5',
                 'name' => 'Vino & Beverages',
+                'type' => 'menu',
                 'sort_order' => 5,
                 'icon' => 'Wine',
+                'description' => 'Italian wines, espresso roasts, and mineral waters',
+            ],
+
+            // Ledger / Inventory Categories
+            [
+                'id' => 'cat-led-1',
+                'name' => 'Dry Goods',
+                'type' => 'ledger',
+                'sort_order' => 6,
+                'icon' => 'Boxes',
+                'description' => 'Bulk flours, grains, dry semolina, and pantry staples',
+            ],
+            [
+                'id' => 'cat-led-2',
+                'name' => 'Dairy',
+                'type' => 'ledger',
+                'sort_order' => 7,
+                'icon' => 'Layers',
+                'description' => 'Fresh cheeses, mozzarellas, parmigiano wheels, mascarpone',
+            ],
+            [
+                'id' => 'cat-led-3',
+                'name' => 'Canned',
+                'type' => 'ledger',
+                'sort_order' => 8,
+                'icon' => 'Tag',
+                'description' => 'San Marzano D.O.P. tomatoes, canned preserves, olives',
+            ],
+            [
+                'id' => 'cat-led-4',
+                'name' => 'Produce',
+                'type' => 'ledger',
+                'sort_order' => 9,
+                'icon' => 'Salad',
+                'description' => 'Fresh herbs, Genovese basil, organic greens, vegetables',
+            ],
+            [
+                'id' => 'cat-led-5',
+                'name' => 'Meat',
+                'type' => 'ledger',
+                'sort_order' => 10,
+                'icon' => 'Flame',
+                'description' => 'Prosciutto di Parma, artisan salumi, ground beef and pork',
+            ],
+            [
+                'id' => 'cat-led-6',
+                'name' => 'Specialty',
+                'type' => 'ledger',
+                'sort_order' => 11,
+                'icon' => 'Sparkles',
+                'description' => 'Truffle sauces, aged balsamics, EVOO, rare ingredients',
+            ],
+            [
+                'id' => 'cat-led-7',
+                'name' => 'Bakery',
+                'type' => 'ledger',
+                'sort_order' => 12,
+                'icon' => 'Cake',
+                'description' => 'Ladyfingers, focaccia dough batches, artisan crusts',
+            ],
+            [
+                'id' => 'cat-led-8',
+                'name' => 'Beverages',
+                'type' => 'ledger',
+                'sort_order' => 13,
+                'icon' => 'Coffee',
+                'description' => 'Espresso beans, bottled mineral waters, juices, syrups',
             ],
         ];
     }

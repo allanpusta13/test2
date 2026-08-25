@@ -70,6 +70,8 @@ export const PublicMenu: React.FC = () => {
     }
   };
 
+  const menuCategories = categories.filter(cat => cat.type === 'menu' || !cat.type || cat.type === 'both');
+
   const filteredItems = menuItems.filter(item => {
     const matchesCategory = activeCategoryId === 'all' || item.category_id === activeCategoryId;
     const matchesSearch = 
@@ -356,7 +358,7 @@ export const PublicMenu: React.FC = () => {
                   <span>{t('menu.all_categories', {}, 'All Specialties')} ({menuItems.length})</span>
                 </button>
 
-                {categories.map(cat => {
+                {menuCategories.map(cat => {
                   const catItemCount = menuItems.filter(i => i.category_id === cat.id).length;
                   return (
                     <button

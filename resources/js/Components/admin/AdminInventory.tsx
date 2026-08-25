@@ -27,6 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { InventoryItem, InventoryTransaction, TransactionType } from '../../types';
 import { DataTable } from '../ui/data-table';
 import { DataTableColumnHeader } from '../ui/data-table-column-header';
+import { CategoryManagerDialog } from './CategoryManagerDialog';
 
 export const AdminInventory: React.FC = () => {
   const {
@@ -41,6 +42,7 @@ export const AdminInventory: React.FC = () => {
   const [ledgerSearch, setLedgerSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [txTypeFilter, setTxTypeFilter] = useState<string>('all');
+  const [isCategoryManagerOpen, setIsCategoryManagerOpen] = useState(false);
 
   // Restock / Waste Transaction Modal
   const [isTxModalOpen, setIsTxModalOpen] = useState(false);
@@ -369,6 +371,15 @@ export const AdminInventory: React.FC = () => {
 
         <div className="flex items-center gap-2">
           <Button
+            variant="outline"
+            onClick={() => setIsCategoryManagerOpen(true)}
+            className="h-9 border-stone-800 bg-stone-900 hover:bg-stone-800 text-stone-200 hover:text-amber-400 font-bold text-xs rounded-xl gap-2 shadow-sm"
+          >
+            <Layers className="w-3.5 h-3.5 text-amber-400" />
+            <span>Manage Categories</span>
+          </Button>
+
+          <Button
             onClick={() => handleOpenRestock()}
             className="h-9 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs rounded-xl gap-1.5 shadow-sm"
           >
@@ -437,6 +448,14 @@ export const AdminInventory: React.FC = () => {
                 </button>
               );
             })}
+            <button
+              onClick={() => setIsCategoryManagerOpen(true)}
+              className="px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap bg-stone-950/80 hover:bg-stone-800 text-amber-400 hover:text-amber-300 border border-dashed border-amber-500/40 flex items-center gap-1"
+              title="Add or manage categories"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Category</span>
+            </button>
           </div>
 
           <DataTable
@@ -647,6 +666,13 @@ export const AdminInventory: React.FC = () => {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Unified Category Manager Dialog (Ledger & Menu Categories) */}
+      <CategoryManagerDialog
+        open={isCategoryManagerOpen}
+        onOpenChange={setIsCategoryManagerOpen}
+        defaultScope="ledger"
+      />
 
     </div>
   );

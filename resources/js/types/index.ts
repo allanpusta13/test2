@@ -63,11 +63,15 @@ export interface MenuItem {
   recipe: RecipeIngredient[];
 }
 
+export type CategoryScope = 'menu' | 'ledger' | 'both';
+
 export interface Category {
   id: string;
   name: string;
+  type?: CategoryScope;
   sort_order: number;
   icon?: string;
+  description?: string;
 }
 
 export interface SelectedModifier {

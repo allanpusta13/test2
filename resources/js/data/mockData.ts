@@ -124,11 +124,12 @@ export const FIXED_ROLE_PERMISSIONS: RolePermission[] = [
 ];
 
 export const INITIAL_CATEGORIES: Category[] = [
-  { id: 'cat-1', name: '...', sort_order: 1, icon: 'Pizza' },
-  { id: 'cat-2', name: '...', sort_order: 2, icon: 'UtensilsCrossed' },
-  { id: 'cat-3', name: '...', sort_order: 3, icon: 'Salad' },
-  { id: 'cat-4', name: '...', sort_order: 4, icon: 'Cake' },
-  { id: 'cat-5', name: '...', sort_order: 5, icon: 'Wine' },
+  { id: 'cat-1', name: '...', type: 'menu', sort_order: 1, icon: 'Pizza' },
+  { id: 'cat-2', name: '...', type: 'menu', sort_order: 2, icon: 'UtensilsCrossed' },
+  { id: 'cat-3', name: '...', type: 'menu', sort_order: 3, icon: 'Salad' },
+  { id: 'cat-4', name: '...', type: 'menu', sort_order: 4, icon: 'Cake' },
+  { id: 'cat-5', name: '...', type: 'menu', sort_order: 5, icon: 'Wine' },
+  { id: 'cat-led-1', name: '...', type: 'ledger', sort_order: 6, icon: 'Boxes' },
 ];
 
 export const INITIAL_INVENTORY_ITEMS: InventoryItem[] = [];

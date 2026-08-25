@@ -68,10 +68,10 @@ interface RestaurantContextType {
   quickLogin: (role?: RoleType, email?: string) => Promise<{ success: boolean; message: string; user: User; role: RoleType }>;
   logout: () => Promise<void>;
 
-  // Menu
+  // Menu & Ledger Categories
   categories: Category[];
   setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
-  addCategory: (name: string, icon?: string) => Category;
+  addCategory: (name: string, icon?: string, type?: CategoryScope, description?: string) => Category;
   updateCategory: (id: string, updates: Partial<Category>) => void;
   deleteCategory: (id: string) => void;
   menuItems: MenuItem[];
@@ -573,13 +573,15 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     );
   };
 
-  // Category Management
-  const addCategory = (name: string, icon?: string): Category => {
+  // Category Management (Unified Menu & Ledger Categories)
+  const addCategory = (name: string, icon?: string, type: CategoryScope = 'menu', description?: string): Category => {
     const newCat: Category = {
       id: `cat-${Date.now()}`,
       name: name.trim(),
+      type: type,
       sort_order: categories.length + 1,
-      icon: icon || 'Utensils',
+      icon: icon || (type === 'ledger' ? 'Boxes' : 'Utensils'),
+      description: description?.trim() || undefined,
     };
     setCategories(prev => [...prev, newCat]);
     return newCat;
