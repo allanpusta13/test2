@@ -6,14 +6,14 @@ namespace Database\Seeders;
 
 use App\Models\InventoryItem;
 use App\Models\InventoryTransaction;
-use App\Services\RestaurantDataService;
+use App\Services\SeedDataService;
 use Illuminate\Database\Seeder;
 
-class InventorySeeder extends Seeder
+final class InventorySeeder extends Seeder
 {
     public function run(): void
     {
-        $items = RestaurantDataService::getInventoryItems();
+        $items = SeedDataService::getInventoryItems();
         foreach ($items as $item) {
             InventoryItem::updateOrCreate(
                 ['id' => $item['id']],
@@ -27,7 +27,7 @@ class InventorySeeder extends Seeder
             );
         }
 
-        $transactions = RestaurantDataService::getTransactions();
+        $transactions = SeedDataService::getTransactions();
         foreach ($transactions as $tx) {
             InventoryTransaction::updateOrCreate(
                 ['id' => $tx['id']],
@@ -38,6 +38,7 @@ class InventorySeeder extends Seeder
                     'type' => $tx['type'],
                     'reference' => $tx['reference'],
                     'notes' => $tx['notes'] ?? null,
+                    'created_at' => $tx['created_at'] ?? now(),
                 ]
             );
         }

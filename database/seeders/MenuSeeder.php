@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\MenuItem;
-use App\Services\RestaurantDataService;
+use App\Services\SeedDataService;
 use Illuminate\Database\Seeder;
 
-class MenuSeeder extends Seeder
+final class MenuSeeder extends Seeder
 {
     public function run(): void
     {
-        $items = RestaurantDataService::getMenuItems();
+        $items = SeedDataService::getMenuItems();
 
         foreach ($items as $item) {
             MenuItem::updateOrCreate(

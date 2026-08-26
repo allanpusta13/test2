@@ -7,14 +7,14 @@ namespace Database\Seeders;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
-use App\Services\RestaurantDataService;
+use App\Services\SeedDataService;
 use Illuminate\Database\Seeder;
 
-class OrderSeeder extends Seeder
+final class OrderSeeder extends Seeder
 {
     public function run(): void
     {
-        $orders = RestaurantDataService::getOrders();
+        $orders = SeedDataService::getOrders();
 
         foreach ($orders as $orderData) {
             $order = Order::updateOrCreate(
@@ -32,11 +32,13 @@ class OrderSeeder extends Seeder
                     'subtotal' => $orderData['subtotal'],
                     'tax_total' => $orderData['tax_total'],
                     'total' => $orderData['total'],
+                    'created_at' => $orderData['created_at'] ?? now(),
+                    'updated_at' => $orderData['updated_at'] ?? now(),
                 ]
             );
 
             // Seed items
-            if (!empty($orderData['items'])) {
+            if (! empty($orderData['items'])) {
                 foreach ($orderData['items'] as $item) {
                     OrderItem::updateOrCreate(
                         ['id' => $item['id']],
@@ -55,7 +57,7 @@ class OrderSeeder extends Seeder
             }
 
             // Seed payments
-            if (!empty($orderData['payments'])) {
+            if (! empty($orderData['payments'])) {
                 foreach ($orderData['payments'] as $payment) {
                     Payment::updateOrCreate(
                         ['id' => $payment['id']],
@@ -68,6 +70,7 @@ class OrderSeeder extends Seeder
                             'cashier_id' => $payment['cashier_id'] ?? null,
                             'cashier_name' => $payment['cashier_name'] ?? null,
                             'notes' => $payment['notes'] ?? null,
+                            'created_at' => $payment['created_at'] ?? now(),
                         ]
                     );
                 }

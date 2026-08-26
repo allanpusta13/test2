@@ -4,19 +4,22 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
-class Category extends Model
+final class Category extends Model
 {
     use HasFactory;
+
+    public $incrementing = false;
 
     protected $fillable = [
         'id',
         'name',
+        'type',
         'slug',
         'icon',
         'sort_order',
@@ -24,26 +27,11 @@ class Category extends Model
     ];
 
     protected $keyType = 'string';
-    public $incrementing = false;
 
     protected $casts = [
         'sort_order' => 'integer',
         'is_active' => 'boolean',
     ];
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(function (Category $category): void {
-            if (empty($category->id)) {
-                $category->id = 'cat-' . Str::uuid()->toString();
-            }
-            if (empty($category->slug)) {
-                $category->slug = Str::slug($category->name);
-            }
-        });
-    }
 
     public function menuItems(): HasMany
     {
@@ -53,5 +41,19 @@ class Category extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true)->orderBy('sort_order');
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        self::creating(function (Category $category): void {
+            if (empty($category->id)) {
+                $category->id = 'cat-'.Str::uuid()->toString();
+            }
+            if (empty($category->slug)) {
+                $category->slug = Str::slug($category->name);
+            }
+        });
     }
 }
