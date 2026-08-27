@@ -12,9 +12,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Role::create(['id' => 'role-admin', 'name' => 'admin', 'is_system' => true]);
-    Role::create(['id' => 'role-cashier', 'name' => 'cashier', 'is_system' => true]);
-    Role::create(['id' => 'role-kitchen-staff', 'name' => 'kitchen_staff', 'is_system' => true]);
+    Role::updateOrCreate(['name' => 'admin'], ['id' => 'role-admin', 'name' => 'admin', 'is_system' => true]);
+    Role::updateOrCreate(['name' => 'cashier'], ['id' => 'role-cashier', 'name' => 'cashier', 'is_system' => true]);
+    Role::updateOrCreate(['name' => 'kitchen_staff'], ['id' => 'role-kitchen-staff', 'name' => 'kitchen_staff', 'is_system' => true]);
 
     Category::create(['id' => 'cat-pizza', 'name' => 'Pizzas', 'type' => 'menu', 'sort_order' => 1, 'is_active' => true]);
     MenuItem::create([

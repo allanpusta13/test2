@@ -18,8 +18,8 @@ test('auth status returns current session info for guest', function () {
 });
 
 test('user can authenticate via login endpoint', function () {
-    App\Models\Role::create(['id' => 'role-admin', 'name' => 'admin', 'is_system' => true]);
-    App\Models\Role::create(['id' => 'role-cashier', 'name' => 'cashier', 'is_system' => true]);
+    App\Models\Role::updateOrCreate(['name' => 'admin'], ['id' => 'role-admin', 'name' => 'admin', 'is_system' => true]);
+    App\Models\Role::updateOrCreate(['name' => 'cashier'], ['id' => 'role-cashier', 'name' => 'cashier', 'is_system' => true]);
 
     $user = User::factory()->create([
         'email' => 'testuser@artisanbistro.com',
@@ -42,7 +42,7 @@ test('user can authenticate via login endpoint', function () {
 });
 
 test('user can quick login by role', function () {
-    App\Models\Role::create(['id' => 'role-cashier', 'name' => 'cashier', 'is_system' => true]);
+    App\Models\Role::updateOrCreate(['name' => 'cashier'], ['id' => 'role-cashier', 'name' => 'cashier', 'is_system' => true]);
 
     $cashier = User::factory()->create([
         'email' => 'cashier@artisanbistro.com',

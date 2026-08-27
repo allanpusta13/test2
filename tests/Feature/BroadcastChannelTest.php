@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Event;
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('admin can subscribe to orders channel', function () {
-    Role::create(['id' => 'role-admin', 'name' => 'admin', 'is_system' => true]);
+    Role::updateOrCreate(['name' => 'admin'], ['id' => 'role-admin', 'name' => 'admin', 'is_system' => true]);
     $user = User::factory()->create(['role_id' => 'role-admin']);
 
     $result = Broadcast::channel('orders', function ($authUser) {
@@ -28,7 +28,7 @@ test('admin can subscribe to orders channel', function () {
 });
 
 test('cashier can subscribe to orders channel', function () {
-    Role::create(['id' => 'role-cashier', 'name' => 'cashier', 'is_system' => true]);
+    Role::updateOrCreate(['name' => 'cashier'], ['id' => 'role-cashier', 'name' => 'cashier', 'is_system' => true]);
     $user = User::factory()->create(['role_id' => 'role-cashier']);
 
     $callback = function ($authUser) {
@@ -39,7 +39,7 @@ test('cashier can subscribe to orders channel', function () {
 });
 
 test('kitchen staff can subscribe to orders channel', function () {
-    Role::create(['id' => 'role-kitchen-staff', 'name' => 'kitchen_staff', 'is_system' => true]);
+    Role::updateOrCreate(['name' => 'kitchen_staff'], ['id' => 'role-kitchen-staff', 'name' => 'kitchen_staff', 'is_system' => true]);
     $user = User::factory()->create(['role_id' => 'role-kitchen-staff']);
 
     $callback = function ($authUser) {
@@ -50,7 +50,7 @@ test('kitchen staff can subscribe to orders channel', function () {
 });
 
 test('user with non-staff role cannot subscribe to orders channel', function () {
-    Role::create(['id' => 'role-invalid', 'name' => 'waiter', 'is_system' => false]);
+    Role::updateOrCreate(['name' => 'waiter'], ['id' => 'role-invalid', 'name' => 'waiter', 'is_system' => false]);
     $user = User::factory()->create(['role_id' => 'role-invalid']);
 
     $callback = function ($authUser) {
