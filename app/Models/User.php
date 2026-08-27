@@ -6,28 +6,28 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
-use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
-use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-final class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery
+final class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    public const ROLE_ADMIN = 'admin';
-    public const ROLE_CASHIER = 'cashier';
-    public const ROLE_KITCHEN_STAFF = 'kitchen_staff';
+    public const ROLE_ADMIN = Role::ROLE_ADMIN;
+
+    public const ROLE_CASHIER = Role::ROLE_CASHIER;
+
+    public const ROLE_KITCHEN_STAFF = Role::ROLE_KITCHEN_STAFF;
+
+    public $incrementing = false;
 
     /**
      * The primary key type and incrementing settings.
      */
     protected $keyType = 'string';
-    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -39,32 +39,9 @@ final class User extends Authenticatable implements FilamentUser, HasAppAuthenti
         'name',
         'email',
         'password',
-        'role',
+        'role_id',
         'avatar',
     ];
-
-    /**
-     * Role checks helper methods.
-     */
-    public function isAdmin(): bool
-    {
-        return $this->role === self::ROLE_ADMIN;
-    }
-
-    public function isCashier(): bool
-    {
-        return $this->role === self::ROLE_CASHIER;
-    }
-
-    public function isKitchenStaff(): bool
-    {
-        return $this->role === self::ROLE_KITCHEN_STAFF;
-    }
-
-    public function hasRole(string ...$roles): bool
-    {
-        return in_array($this->role, $roles, true);
-    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -76,12 +53,68 @@ final class User extends Authenticatable implements FilamentUser, HasAppAuthenti
         'remember_token',
         'app_authentication_secret',
         'app_authentication_recovery_codes',
+        'associated_role',
     ];
 
-    public function canAccessPanel(Panel $panel): bool
+    protected $appends = ['role'];
+
+    /**
+     * Get the role that this user belongs to.
+     */
+    public function associatedRole(): BelongsTo
     {
-        /* TODO: Please implement your own logic here. */
-        return true; // str_ends_with($this->email, '@larament.test');
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    /**
+     * Get the role name string — this is what the frontend expects as `role`.
+     */
+    public function getRoleAttribute(): string
+    {
+        return $this->associatedRole?->name ?? 'cashier';
+    }
+
+    /**
+     * Get the role model for internal use (e.g. permission checks).
+     */
+    public function getRoleModel(): ?Role
+    {
+        return $this->associatedRole;
+    }
+
+    /**
+     * Role checks helper methods.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->getRoleAttribute() === Role::ROLE_ADMIN;
+    }
+
+    public function isCashier(): bool
+    {
+        return $this->getRoleAttribute() === Role::ROLE_CASHIER;
+    }
+
+    public function isKitchenStaff(): bool
+    {
+        return $this->getRoleAttribute() === Role::ROLE_KITCHEN_STAFF;
+    }
+
+    public function hasRole(string ...$roleNames): bool
+    {
+        return in_array($this->getRoleAttribute(), $roleNames, true);
+    }
+
+    /**
+     * Resolve the role relationship for eager loading.
+     */
+    public function resolveRelation($relation)
+    {
+        if ($relation === 'role') {
+            return $this->associatedRole();
+        }
+
+        return parent::resolveRelation($relation);
     }
 
     public function getAppAuthenticationSecret(): ?string
