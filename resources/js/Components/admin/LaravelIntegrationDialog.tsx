@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRestaurant } from '../../context/RestaurantContext';
+import { useRestaurant } from '../../Context/RestaurantContext';
 import {
   Dialog,
   DialogContent,

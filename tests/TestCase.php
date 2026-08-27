@@ -15,6 +15,7 @@ abstract class TestCase extends BaseTestCase
             'name' => config('app.default_user.name'),
             'email' => config('app.default_user.email'),
             'password' => config('app.default_user.password'),
+            'role_id' => 'role-admin',
         ]));
 
         $this->withoutVite();

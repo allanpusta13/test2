@@ -20,18 +20,8 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class InventoryController extends Controller
+final class InventoryController extends Controller
 {
-    protected function getEffectiveLocale(Request $request): string
-    {
-        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
-        if (!in_array($locale, ['en', 'it'], true)) {
-            $locale = 'en';
-        }
-        App::setLocale($locale);
-        return $locale;
-    }
-
     /**
      * Display a listing of inventory items (Inertia page).
      */
@@ -57,8 +47,8 @@ class InventoryController extends Controller
         if ($search = $request->query('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('sku', 'like', "%{$search}%")
-                  ->orWhere('category', 'like', "%{$search}%");
+                    ->orWhere('sku', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%");
             });
         }
 
@@ -106,7 +96,7 @@ class InventoryController extends Controller
         unset($validated['initial_stock']);
 
         if (empty($validated['id'])) {
-            $validated['id'] = 'inv-' . Str::uuid()->toString();
+            $validated['id'] = 'inv-'.Str::uuid()->toString();
         }
 
         $item = DB::transaction(function () use ($validated, $initialStock): InventoryItem {
@@ -114,7 +104,7 @@ class InventoryController extends Controller
 
             if ($initialStock > 0) {
                 InventoryTransaction::create([
-                    'id' => 'tx-' . Str::uuid()->toString(),
+                    'id' => 'tx-'.Str::uuid()->toString(),
                     'inventory_item_id' => $item->id,
                     'inventory_item_name' => $item->name,
                     'quantity' => $initialStock,
@@ -265,7 +255,7 @@ class InventoryController extends Controller
         $item = InventoryItem::findOrFail($validated['inventory_item_id']);
 
         if (empty($validated['id'])) {
-            $validated['id'] = 'tx-' . Str::uuid()->toString();
+            $validated['id'] = 'tx-'.Str::uuid()->toString();
         }
 
         $validated['inventory_item_name'] = $item->name;
@@ -288,5 +278,16 @@ class InventoryController extends Controller
                 'new_derived_stock' => $item->fresh()->derived_stock,
             ],
         ], 201);
+    }
+
+    protected function getEffectiveLocale(Request $request): string
+    {
+        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
+        if (! in_array($locale, ['en', 'it'], true)) {
+            $locale = 'en';
+        }
+        App::setLocale($locale);
+
+        return $locale;
     }
 }

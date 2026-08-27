@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Inertia\Middleware;
 
-class HandleInertiaRequests extends Middleware
+final class HandleInertiaRequests extends Middleware
 {
     /**
      * The root template that's loaded on the first page visit.
@@ -41,7 +41,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
-        if (!in_array($locale, ['en', 'it'], true)) {
+        if (! in_array($locale, ['en', 'it'], true)) {
             $locale = 'en';
         }
         App::setLocale($locale);
@@ -69,6 +69,7 @@ class HandleInertiaRequests extends Middleware
             'orders' => RestaurantDataService::getOrders(),
             'users' => RestaurantDataService::getUsers(),
             'rolesPermissions' => RestaurantDataService::getRolePermissions(),
+            'sidebarNav' => RestaurantDataService::getSidebarNav($request->user()?->role ?? 'admin'),
         ]);
     }
 }

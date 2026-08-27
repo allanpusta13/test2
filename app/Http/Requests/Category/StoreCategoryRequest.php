@@ -6,7 +6,7 @@ namespace App\Http\Requests\Category;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCategoryRequest extends FormRequest
+final class StoreCategoryRequest extends FormRequest
 {
     public function authorize(): bool
     {

@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 
-class LocaleController extends Controller
+final class LocaleController extends Controller
 {
     public function setLocale(Request $request, string $locale): RedirectResponse|JsonResponse
     {
@@ -34,7 +34,7 @@ class LocaleController extends Controller
     public function translations(Request $request, ?string $locale = null): JsonResponse
     {
         $targetLocale = $locale ?? Session::get('locale') ?? config('app.locale', 'en');
-        if (!in_array($targetLocale, ['en', 'it'], true)) {
+        if (! in_array($targetLocale, ['en', 'it'], true)) {
             $targetLocale = 'en';
         }
 

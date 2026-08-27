@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { useRestaurant } from '../../context/RestaurantContext';
+import { router } from '@inertiajs/react';
+import { useRestaurant } from '../../Context/RestaurantContext';
+import { laravelApi, formatLaravelErrors } from '../../lib/api';
 import { 
   Plus, 
   Search, 
@@ -46,9 +48,8 @@ export const AdminMenu: React.FC = () => {
   const {
     categories,
     menuItems,
-    setMenuItems,
-    toggleDishAvailability,
     inventoryItems,
+    toggleDishAvailability,
   } = useRestaurant();
 
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -158,33 +159,52 @@ export const AdminMenu: React.FC = () => {
     setIsCreateOpen(true);
   };
 
-  const handleSaveItem = () => {
+  const handleSaveItem = async () => {
     if (!name.trim()) return;
 
-    const dishPayload: MenuItem = {
-      id: editingItem ? editingItem.id : `item-${Date.now()}`,
+    const payload = {
       category_id: categoryId,
       name: name.trim(),
       description: description.trim(),
       price: Number(price) || 0,
-      image: image.trim() || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80',
-      is_available: editingItem ? editingItem.is_available : true,
+      image: image.trim() || undefined,
       modifier_groups: modifierGroups,
       recipe: recipe,
     };
 
-    if (editingItem) {
-      setMenuItems(prev => prev.map(i => (i.id === editingItem.id ? dishPayload : i)));
-    } else {
-      setMenuItems(prev => [dishPayload, ...prev]);
+    try {
+      if (editingItem) {
+        await laravelApi.menu.updateMenuItem(editingItem.id, payload);
+      } else {
+        await laravelApi.menu.createMenuItem(payload);
+      }
+      router.reload({ only: ['menuItems', 'categories'] });
+      setIsCreateOpen(false);
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      alert(errors.join('\n'));
     }
-
-    setIsCreateOpen(false);
   };
 
-  const handleDeleteItem = (id: string) => {
+  const handleDeleteItem = async (id: string) => {
     if (confirm('Are you sure you want to remove this menu item?')) {
-      setMenuItems(prev => prev.filter(i => i.id !== id));
+      try {
+        await laravelApi.menu.deleteMenuItem(id);
+        router.reload({ only: ['menuItems'] });
+      } catch (err) {
+        const errors = formatLaravelErrors(err);
+        alert(errors.join('\n'));
+      }
+    }
+  };
+
+  const handleToggleAvailability = async (id: string) => {
+    try {
+      await laravelApi.menu.toggleAvailability(id);
+      router.reload({ only: ['menuItems'] });
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      alert(errors.join('\n'));
     }
   };
 
@@ -432,7 +452,7 @@ export const AdminMenu: React.FC = () => {
         const dish = row.original;
         return (
           <button
-            onClick={() => toggleDishAvailability(dish.id)}
+            onClick={() => handleToggleAvailability(dish.id)}
             className="cursor-pointer"
             title="Click to toggle availability"
           >
@@ -608,7 +628,7 @@ export const AdminMenu: React.FC = () => {
                       {category?.name || 'Category'}
                     </Badge>
                     <button
-                      onClick={() => toggleDishAvailability(dish.id)}
+                      onClick={() => handleToggleAvailability(dish.id)}
                       className="cursor-pointer"
                       title={dish.is_available ? 'Mark as Sold Out' : 'Mark as Available'}
                     >

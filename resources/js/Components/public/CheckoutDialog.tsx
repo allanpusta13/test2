@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { useRestaurant } from '../../context/RestaurantContext';
+import { router } from '@inertiajs/react';
+import { useRestaurant } from '../../Context/RestaurantContext';
+import { laravelApi, formatLaravelErrors } from '../../lib/api';
 import {
   Dialog,
   DialogContent,
@@ -32,7 +34,6 @@ export const CheckoutDialog: React.FC = () => {
     clearCart,
     isCheckoutOpen,
     setIsCheckoutOpen,
-    createOrder,
     setActiveSurface,
     setActiveTrackingToken,
   } = useRestaurant();
@@ -49,7 +50,7 @@ export const CheckoutDialog: React.FC = () => {
   const tax = Number((subtotal * settings.tax_rate).toFixed(2));
   const grandTotal = Number((subtotal + tax).toFixed(2));
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerName.trim()) {
       setErrorMsg('Please provide your name for order identification.');
@@ -64,13 +65,20 @@ export const CheckoutDialog: React.FC = () => {
     setErrorMsg(null);
 
     try {
-      const newOrder = createOrder({
+      const subtotal = cart.reduce((sum, item) => sum + item.total_price, 0);
+      const tax = Number((subtotal * settings.tax_rate).toFixed(2));
+      const total = Number((subtotal + tax).toFixed(2));
+
+      const result = await laravelApi.home.submitOrder({
         customer_name: customerName.trim(),
         customer_phone: customerPhone.trim() || undefined,
         type: orderType,
         table_number: orderType === 'dine_in' ? tableNumber.trim() : undefined,
         notes: notes.trim() || undefined,
         idempotency_key: `client-idem-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        subtotal,
+        tax_total: tax,
+        total,
         items: cart.map(c => ({
           id: `oi-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
           menu_item_id: c.menu_item_id,
@@ -81,15 +89,15 @@ export const CheckoutDialog: React.FC = () => {
           notes: c.notes,
           selected_modifiers: c.selected_modifiers,
         })),
-        status: 'pending',
       });
 
       clearCart();
       setIsCheckoutOpen(false);
-      setActiveTrackingToken(newOrder.tracking_token);
+      setActiveTrackingToken(result.tracking_token);
       setActiveSurface('public_tracker');
-    } catch (err: any) {
-      setErrorMsg(err?.message || 'Failed to place order. Please try again.');
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      setErrorMsg(errors.join('\n'));
     } finally {
       setIsSubmitting(false);
     }

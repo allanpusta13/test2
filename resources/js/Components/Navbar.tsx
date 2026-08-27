@@ -1,4 +1,5 @@
 import React from 'react';
+import { router } from '@inertiajs/react';
 import { useRestaurant } from '../Context/RestaurantContext';
 import { 
   Utensils, 
@@ -65,7 +66,10 @@ export const Navbar: React.FC = () => {
         {/* Brand & Identity */}
         <div className="flex items-center gap-3">
           <button 
-            onClick={() => setActiveSurface('public_menu')}
+            onClick={() => {
+              setActiveSurface('public_menu');
+              router.visit('/');
+            }}
             className="flex items-center gap-2.5 group text-left cursor-pointer focus:outline-none"
           >
             <div className="w-10 h-10 rounded-2xl bg-amber-500 text-stone-950 flex items-center justify-center font-black shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform">
@@ -91,7 +95,10 @@ export const Navbar: React.FC = () => {
         <nav className="flex items-center gap-1.5 bg-stone-900/90 p-1 rounded-2xl border border-stone-800 text-xs font-semibold">
           <button
             id="nav-public-menu"
-            onClick={() => setActiveSurface('public_menu')}
+            onClick={() => {
+              setActiveSurface('public_menu');
+              router.visit('/');
+            }}
             className={`px-3 py-1.5 rounded-xl transition cursor-pointer flex items-center gap-1.5 ${
               activeSurface === 'public_menu'
                 ? 'bg-amber-500 text-stone-950 font-bold shadow-sm'
@@ -104,7 +111,10 @@ export const Navbar: React.FC = () => {
 
           <button
             id="nav-public-tracker"
-            onClick={() => setActiveSurface('public_tracker')}
+            onClick={() => {
+              setActiveSurface('public_tracker');
+              router.visit('/tracker');
+            }}
             className={`px-3 py-1.5 rounded-xl transition cursor-pointer flex items-center gap-1.5 ${
               activeSurface === 'public_tracker'
                 ? 'bg-amber-500 text-stone-950 font-bold shadow-sm'
@@ -117,7 +127,11 @@ export const Navbar: React.FC = () => {
 
           <button
             id="nav-admin-panel"
-            onClick={() => requestStaffAccess('admin', 'pos', 'Please authenticate with your staff credentials to access operations.')}
+            onClick={() => {
+              if (requestStaffAccess('admin', 'pos', 'Please authenticate with your staff credentials to access operations.')) {
+                router.visit('/pos');
+              }
+            }}
             className={`px-3 py-1.5 rounded-xl transition cursor-pointer flex items-center gap-1.5 ${
               activeSurface === 'admin'
                 ? 'bg-amber-500 text-stone-950 font-bold shadow-sm'
@@ -261,7 +275,7 @@ export const Navbar: React.FC = () => {
                       {currentUser.name.split(' ')[0]}
                     </p>
                     <p className="text-[10px] text-amber-400 font-mono leading-none capitalize">
-                      {t(`app.roles.${currentUser.role}`, {}, currentUser.role.replace('_', ' '))}
+                      {t(`app.roles.${currentUser?.role}`, {}, currentUser?.role?.replace('_', ' ') || 'cashier')}
                     </p>
                   </div>
                 </Button>
@@ -279,41 +293,6 @@ export const Navbar: React.FC = () => {
                     {currentUser.email}
                   </p>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-stone-800" />
-
-                <div className="px-2 py-1 text-[10px] uppercase tracking-wider font-semibold text-stone-400">
-                  Switch Staff Role
-                </div>
-
-                {/* Seeded Staff Roles */}
-                {users.map(user => (
-                  <DropdownMenuItem
-                    key={user.id}
-                    onClick={() => quickLogin(user.role, user.email)}
-                    className={`flex items-center justify-between p-2 rounded-xl cursor-pointer text-xs ${
-                      currentUser?.id === user.id ? 'bg-amber-500/15 text-amber-300 font-semibold' : 'text-stone-300 hover:text-stone-100 hover:bg-stone-800'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Avatar className="w-6 h-6 border border-stone-700">
-                        <AvatarImage src={user.avatar} />
-                        <AvatarFallback className="text-[10px]">{user.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-xs font-medium text-stone-100">{user.name}</p>
-                        <p className="text-[10px] text-stone-400 capitalize">
-                          {t(`app.roles.${user.role}`, {}, user.role.replace('_', ' '))}
-                        </p>
-                      </div>
-                    </div>
-                    {currentUser?.id === user.id && (
-                      <Badge variant="outline" className="text-[9px] py-0 px-1.5 border-amber-500/50 text-amber-300">
-                        Active
-                      </Badge>
-                    )}
-                  </DropdownMenuItem>
-                ))}
-
                 <DropdownMenuSeparator className="bg-stone-800" />
 
                 {/* Sign Out */}

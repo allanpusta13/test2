@@ -6,7 +6,7 @@ namespace App\Http\Requests\MenuItem;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ToggleAvailabilityRequest extends FormRequest
+final class ToggleAvailabilityRequest extends FormRequest
 {
     public function authorize(): bool
     {

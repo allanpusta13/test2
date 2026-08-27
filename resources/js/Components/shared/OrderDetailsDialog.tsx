@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRestaurant } from '../../context/RestaurantContext';
+import { useRestaurant } from '../../Context/RestaurantContext';
 import { 
   ReceiptText, 
   Clock, 
@@ -609,7 +609,7 @@ export const OrderDetailsDialog: React.FC = () => {
                   <div className="flex items-center gap-2 pt-1 text-[11px] text-stone-400">
                     <span>Current Auth Context:</span>
                     <Badge variant="outline" className="text-[10px] border-stone-700 bg-stone-950 font-mono">
-                      {currentUser ? `${currentUser.name} (${currentUser.role.replace('_', ' ')})` : 'Public Customer'}
+                      {currentUser ? `${currentUser.name} (${currentUser.role?.replace('_', ' ')})` : 'Public Customer'}
                     </Badge>
                   </div>
                 </div>

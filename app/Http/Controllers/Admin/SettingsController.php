@@ -8,9 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\UpdateRestaurantSettingsRequest;
 use App\Services\RestaurantDataService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
-class SettingsController extends Controller
+final class SettingsController extends Controller
 {
     public function show(): JsonResponse
     {

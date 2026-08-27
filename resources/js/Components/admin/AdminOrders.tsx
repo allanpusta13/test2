@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { useRestaurant } from '../../context/RestaurantContext';
+import { router } from '@inertiajs/react';
+import { useRestaurant } from '../../Context/RestaurantContext';
+import { laravelApi, formatLaravelErrors } from '../../lib/api';
 import { 
   Search, 
   Coins, 
@@ -39,8 +41,6 @@ import {
 export const AdminOrders: React.FC = () => {
   const {
     orders,
-    updateOrderStatus,
-    recordCashPayment,
     getPaymentStatus,
     getAmountPaid,
     getUnpaidBalance,
@@ -62,19 +62,17 @@ export const AdminOrders: React.FC = () => {
 
   const isCashierOrAdmin = currentUser && (currentUser.role === 'cashier' || currentUser.role === 'admin');
 
-  const handleOpenPaymentModal = (order: Order) => {
-    if (!isCashierOrAdmin) {
-      setViewingOrder(order);
-      return;
+  const handleUpdateStatus = async (orderId: string, status: OrderStatus) => {
+    try {
+      await laravelApi.orders.updateStatus(orderId, status);
+      router.reload({ only: ['orders'] });
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      alert(errors.join('\n'));
     }
-    const due = getUnpaidBalance(order);
-    setCollectingOrder(order);
-    setTenderAmount(due.toFixed(2));
-    setPaymentNotes('');
-    setPaymentError(null);
   };
 
-  const handleConfirmCashPayment = () => {
+  const handleRecordPayment = async () => {
     if (!collectingOrder) return;
     if (!isCashierOrAdmin) {
       setPaymentError('Only authorized Cashiers can record counter cash payments.');
@@ -89,24 +87,34 @@ export const AdminOrders: React.FC = () => {
     }
 
     try {
-      recordCashPayment(
-        collectingOrder.id,
-        Math.min(amountToPay, unpaid),
-        amountToPay,
-        paymentNotes || `Cash payment recorded at counter by Cashier ${currentUser.name}`
-      );
-
-      const updated = orders.find(o => o.id === collectingOrder.id);
-      if (updated) {
-        printEscPosReceipt(updated);
-        setReceiptModalOrder(updated);
-      }
-
+      await laravelApi.pos.recordPayment({
+        order_id: collectingOrder.id,
+        amount: Math.min(amountToPay, unpaid),
+        tendered: amountToPay,
+        notes: paymentNotes || `Cash payment recorded at counter by Cashier ${currentUser.name}`,
+        cashier_name: currentUser.name,
+      });
+      router.reload({ only: ['orders'] });
       setCollectingOrder(null);
-    } catch (err: any) {
-      setPaymentError(err?.message || 'Failed to record payment');
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      setPaymentError(errors.join('\n'));
     }
   };
+
+  const handleOpenPaymentModal = (order: Order) => {
+    if (!isCashierOrAdmin) {
+      setViewingOrder(order);
+      return;
+    }
+    const due = getUnpaidBalance(order);
+    setCollectingOrder(order);
+    setTenderAmount(due.toFixed(2));
+    setPaymentNotes('');
+    setPaymentError(null);
+  };
+
+  const handleConfirmCashPayment = handleRecordPayment;
 
   // Filtered orders feed for DataTable
   const filteredOrders = useMemo(() => {
@@ -377,7 +385,7 @@ export const AdminOrders: React.FC = () => {
 
                 {order.status === 'pending' && (
                   <DropdownMenuItem
-                    onClick={() => updateOrderStatus(order.id, 'preparing')}
+                    onClick={() => handleUpdateStatus(order.id, 'preparing')}
                     className="text-xs text-amber-400"
                   >
                     Send to Kitchen (In Prep)
@@ -386,7 +394,7 @@ export const AdminOrders: React.FC = () => {
 
                 {order.status === 'preparing' && (
                   <DropdownMenuItem
-                    onClick={() => updateOrderStatus(order.id, 'ready')}
+                    onClick={() => handleUpdateStatus(order.id, 'ready')}
                     className="text-xs text-amber-400"
                   >
                     Mark as Ready at Pass
@@ -395,7 +403,7 @@ export const AdminOrders: React.FC = () => {
 
                 {order.status === 'ready' && (
                   <DropdownMenuItem
-                    onClick={() => updateOrderStatus(order.id, 'completed')}
+                    onClick={() => handleUpdateStatus(order.id, 'completed')}
                     className="text-xs text-emerald-400"
                   >
                     Mark as Completed / Served
@@ -406,7 +414,7 @@ export const AdminOrders: React.FC = () => {
 
                 {order.status !== 'completed' && order.status !== 'cancelled' && (
                   <DropdownMenuItem
-                    onClick={() => updateOrderStatus(order.id, 'cancelled')}
+                    onClick={() => handleUpdateStatus(order.id, 'cancelled')}
                     className="text-xs text-red-400"
                   >
                     Cancel Order
@@ -418,7 +426,7 @@ export const AdminOrders: React.FC = () => {
         );
       },
     },
-  ], [getPaymentStatus, getUnpaidBalance, getAmountPaid, printEscPosReceipt, setReceiptModalOrder, setViewingOrder, updateOrderStatus]);
+  ], [getPaymentStatus, getUnpaidBalance, getAmountPaid, printEscPosReceipt, setReceiptModalOrder, setViewingOrder, handleUpdateStatus]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">

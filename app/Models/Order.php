@@ -4,24 +4,31 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
-class Order extends Model
+final class Order extends Model
 {
     use HasFactory;
 
     public const STATUS_PENDING = 'pending';
+
     public const STATUS_PREPARING = 'preparing';
+
     public const STATUS_READY = 'ready';
+
     public const STATUS_COMPLETED = 'completed';
+
     public const STATUS_CANCELLED = 'cancelled';
 
     public const TYPE_DINE_IN = 'dine_in';
+
     public const TYPE_TAKEAWAY = 'takeaway';
+
+    public $incrementing = false;
 
     protected $fillable = [
         'id',
@@ -40,7 +47,6 @@ class Order extends Model
     ];
 
     protected $keyType = 'string';
-    public $incrementing = false;
 
     protected $casts = [
         'subtotal' => 'float',
@@ -53,26 +59,6 @@ class Order extends Model
         'payment_status',
         'unpaid_balance',
     ];
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(function (Order $order): void {
-            if (empty($order->id)) {
-                $order->id = 'ord-' . Str::uuid()->toString();
-            }
-            if (empty($order->order_number)) {
-                $order->order_number = 'AB-' . random_int(1000, 9999);
-            }
-            if (empty($order->tracking_token)) {
-                $order->tracking_token = 'OT-' . strtoupper(Str::random(6));
-            }
-            if (empty($order->status)) {
-                $order->status = self::STATUS_PENDING;
-            }
-        });
-    }
 
     public function items(): HasMany
     {
@@ -92,6 +78,7 @@ class Order extends Model
     public function getUnpaidBalanceAttribute(): float
     {
         $balance = $this->total - $this->getAmountPaidAttribute();
+
         return max(0.0, round($balance, 2));
     }
 
@@ -104,6 +91,7 @@ class Order extends Model
         if ($paid >= $this->total - 0.01) {
             return 'paid';
         }
+
         return 'partial';
     }
 
@@ -135,5 +123,25 @@ class Order extends Model
     public function scopeCancelled(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_CANCELLED);
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        self::creating(function (Order $order): void {
+            if (empty($order->id)) {
+                $order->id = 'ord-'.Str::uuid()->toString();
+            }
+            if (empty($order->order_number)) {
+                $order->order_number = 'AB-'.random_int(1000, 9999);
+            }
+            if (empty($order->tracking_token)) {
+                $order->tracking_token = 'OT-'.mb_strtoupper(Str::random(6));
+            }
+            if (empty($order->status)) {
+                $order->status = self::STATUS_PENDING;
+            }
+        });
     }
 }

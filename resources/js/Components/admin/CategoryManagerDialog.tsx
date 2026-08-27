@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { useRestaurant } from '../../context/RestaurantContext';
+import { router } from '@inertiajs/react';
+import { useRestaurant } from '../../Context/RestaurantContext';
+import { laravelApi, formatLaravelErrors } from '../../lib/api';
 import { 
   Layers, 
   Plus, 
@@ -61,14 +63,8 @@ export const CategoryManagerDialog: React.FC<CategoryManagerDialogProps> = ({
 }) => {
   const {
     categories,
-    setCategories,
-    addCategory,
-    updateCategory,
-    deleteCategory,
     menuItems,
-    setMenuItems,
     inventoryItems,
-    setInventoryItems,
     getStock,
   } = useRestaurant();
 
@@ -160,7 +156,7 @@ export const CategoryManagerDialog: React.FC<CategoryManagerDialogProps> = ({
     };
   };
 
-  const handleCreateCategory = (e: React.FormEvent) => {
+  const handleCreateCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCatName.trim()) {
       setCreateError('Please provide a category name.');
@@ -174,12 +170,23 @@ export const CategoryManagerDialog: React.FC<CategoryManagerDialogProps> = ({
       return;
     }
 
-    addCategory(newCatName.trim(), newCatIcon, newCatType, newCatDescription.trim());
-    setNewCatName('');
-    setNewCatType('menu');
-    setNewCatIcon('Utensils');
-    setNewCatDescription('');
-    setCreateError(null);
+    try {
+      await laravelApi.menu.createCategory({
+        name: newCatName.trim(),
+        icon: newCatIcon,
+        type: newCatType,
+        description: newCatDescription.trim() || undefined,
+      });
+      router.reload({ only: ['categories', 'menuItems'] });
+      setNewCatName('');
+      setNewCatType('menu');
+      setNewCatIcon('Utensils');
+      setNewCatDescription('');
+      setCreateError(null);
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      setCreateError(errors.join('\n'));
+    }
   };
 
   const handleStartEdit = (cat: Category) => {
@@ -190,15 +197,21 @@ export const CategoryManagerDialog: React.FC<CategoryManagerDialogProps> = ({
     setEditDescription(cat.description || '');
   };
 
-  const handleSaveEdit = (id: string) => {
+  const handleSaveEdit = async (id: string) => {
     if (!editName.trim()) return;
-    updateCategory(id, {
-      name: editName.trim(),
-      type: editType,
-      icon: editIcon,
-      description: editDescription.trim() || undefined,
-    });
-    setEditingCatId(null);
+    try {
+      await laravelApi.menu.updateCategory(id, {
+        name: editName.trim(),
+        type: editType,
+        icon: editIcon,
+        description: editDescription.trim() || undefined,
+      });
+      router.reload({ only: ['categories'] });
+      setEditingCatId(null);
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      alert(errors.join('\n'));
+    }
   };
 
   const handleCancelEdit = () => {
@@ -207,7 +220,7 @@ export const CategoryManagerDialog: React.FC<CategoryManagerDialogProps> = ({
     setEditDescription('');
   };
 
-  const handleMoveCategory = (index: number, direction: 'up' | 'down') => {
+  const handleMoveCategory = async (index: number, direction: 'up' | 'down') => {
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= categories.length) return;
 
@@ -216,12 +229,18 @@ export const CategoryManagerDialog: React.FC<CategoryManagerDialogProps> = ({
     updated[index] = updated[targetIndex];
     updated[targetIndex] = temp;
 
-    // update sort_orders
     const reordered = updated.map((cat, idx) => ({
-      ...cat,
+      id: cat.id,
       sort_order: idx + 1,
     }));
-    setCategories(reordered);
+
+    try {
+      await laravelApi.menu.reorderCategories(reordered);
+      router.reload({ only: ['categories'] });
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      alert(errors.join('\n'));
+    }
   };
 
   const handleConfirmDelete = (cat: Category) => {
@@ -231,25 +250,24 @@ export const CategoryManagerDialog: React.FC<CategoryManagerDialogProps> = ({
       setReassignCatId(otherCat?.id || '');
       setDeletingCat(cat);
     } else {
-      deleteCategory(cat.id);
+      handleExecuteDelete(cat.id, null);
+    }
+  };
+
+  const handleExecuteDelete = async (catId: string, reassignTo: string | null) => {
+    try {
+      await laravelApi.menu.deleteCategory(catId);
+      router.reload({ only: ['categories', 'menuItems'] });
+      setDeletingCat(null);
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      alert(errors.join('\n'));
     }
   };
 
   const handleExecuteDeleteWithReassign = () => {
     if (!deletingCat) return;
-
-    if (reassignCatId) {
-      // Reassign dishes
-      setMenuItems(prev =>
-        prev.map(item =>
-          item.category_id === deletingCat.id
-            ? { ...item, category_id: reassignCatId }
-            : item
-        )
-      );
-    }
-    deleteCategory(deletingCat.id);
-    setDeletingCat(null);
+    handleExecuteDelete(deletingCat.id, reassignCatId || null);
   };
 
   return (

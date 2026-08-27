@@ -23,18 +23,8 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class MenuController extends Controller
+final class MenuController extends Controller
 {
-    protected function getEffectiveLocale(Request $request): string
-    {
-        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
-        if (!in_array($locale, ['en', 'it'], true)) {
-            $locale = 'en';
-        }
-        App::setLocale($locale);
-        return $locale;
-    }
-
     /**
      * Display a listing of menu items (Inertia page).
      */
@@ -62,7 +52,7 @@ class MenuController extends Controller
         if ($search = $request->query('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -138,7 +128,7 @@ class MenuController extends Controller
         $validated = $request->validated();
 
         if (empty($validated['id'])) {
-            $validated['id'] = 'item-' . Str::uuid()->toString();
+            $validated['id'] = 'item-'.Str::uuid()->toString();
         }
 
         $item = MenuItem::create($validated);
@@ -227,7 +217,7 @@ class MenuController extends Controller
         $item = MenuItem::findOrFail($id);
         $isAvailable = $request->has('is_available')
             ? $request->boolean('is_available')
-            : !$item->is_available;
+            : ! $item->is_available;
 
         $item->update(['is_available' => $isAvailable]);
 
@@ -258,7 +248,7 @@ class MenuController extends Controller
     {
         $validated = $request->validated();
         if (empty($validated['id'])) {
-            $validated['id'] = 'cat-' . Str::uuid()->toString();
+            $validated['id'] = 'cat-'.Str::uuid()->toString();
         }
 
         $category = Category::create($validated);
@@ -322,5 +312,16 @@ class MenuController extends Controller
             'message' => 'Categories reordered successfully',
             'data' => Category::orderBy('sort_order')->get(),
         ]);
+    }
+
+    protected function getEffectiveLocale(Request $request): string
+    {
+        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
+        if (! in_array($locale, ['en', 'it'], true)) {
+            $locale = 'en';
+        }
+        App::setLocale($locale);
+
+        return $locale;
     }
 }

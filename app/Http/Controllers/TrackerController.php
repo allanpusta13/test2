@@ -13,18 +13,8 @@ use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class TrackerController extends Controller
+final class TrackerController extends Controller
 {
-    protected function getEffectiveLocale(Request $request): string
-    {
-        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
-        if (!in_array($locale, ['en', 'it'], true)) {
-            $locale = 'en';
-        }
-        App::setLocale($locale);
-        return $locale;
-    }
-
     public function index(Request $request, ?string $token = null): Response
     {
         $locale = $this->getEffectiveLocale($request);
@@ -42,7 +32,7 @@ class TrackerController extends Controller
             ->orWhere('order_number', $token)
             ->first();
 
-        if (!$order) {
+        if (! $order) {
             return response()->json([
                 'success' => false,
                 'message' => 'Order not found for the given tracking token or order number',
@@ -53,5 +43,16 @@ class TrackerController extends Controller
             'success' => true,
             'data' => $order,
         ]);
+    }
+
+    protected function getEffectiveLocale(Request $request): string
+    {
+        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
+        if (! in_array($locale, ['en', 'it'], true)) {
+            $locale = 'en';
+        }
+        App::setLocale($locale);
+
+        return $locale;
     }
 }

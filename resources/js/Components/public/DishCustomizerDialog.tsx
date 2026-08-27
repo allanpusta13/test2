@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRestaurant } from '../../context/RestaurantContext';
+import { useRestaurant } from '../../Context/RestaurantContext';
 import { MenuItem, SelectedModifier } from '../../types';
 import {
   Dialog,

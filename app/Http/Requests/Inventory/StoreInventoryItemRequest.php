@@ -6,7 +6,7 @@ namespace App\Http\Requests\Inventory;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreInventoryItemRequest extends FormRequest
+final class StoreInventoryItemRequest extends FormRequest
 {
     public function authorize(): bool
     {

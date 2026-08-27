@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
-class InventoryItem extends Model
+final class InventoryItem extends Model
 {
     use HasFactory;
+
+    public $incrementing = false;
 
     protected $fillable = [
         'id',
@@ -24,7 +27,6 @@ class InventoryItem extends Model
     ];
 
     protected $keyType = 'string';
-    public $incrementing = false;
 
     protected $casts = [
         'low_stock_threshold' => 'float',
@@ -36,20 +38,14 @@ class InventoryItem extends Model
         'is_low_stock',
     ];
 
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(function (InventoryItem $item): void {
-            if (empty($item->id)) {
-                $item->id = 'inv-' . Str::uuid()->toString();
-            }
-        });
-    }
-
     public function transactions(): HasMany
     {
         return $this->hasMany(InventoryTransaction::class, 'inventory_item_id')->orderByDesc('created_at');
+    }
+
+    public function menuItems(): BelongsToMany
+    {
+        return $this->belongsToMany(MenuItem::class, 'menu_item_inventory', 'inventory_item_id', 'menu_item_id')->withPivot('quantity_used');
     }
 
     public function getDerivedStockAttribute(): float
@@ -66,6 +62,17 @@ class InventoryItem extends Model
     {
         return $query->whereHas('transactions', function (Builder $q) {
             // Evaluated dynamically or through derived calculation
+        });
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        self::creating(function (InventoryItem $item): void {
+            if (empty($item->id)) {
+                $item->id = 'inv-'.Str::uuid()->toString();
+            }
         });
     }
 }

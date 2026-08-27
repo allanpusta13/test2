@@ -6,7 +6,7 @@ namespace App\Http\Requests\Settings;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRestaurantSettingsRequest extends FormRequest
+final class UpdateRestaurantSettingsRequest extends FormRequest
 {
     public function authorize(): bool
     {

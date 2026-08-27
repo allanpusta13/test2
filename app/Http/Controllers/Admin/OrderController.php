@@ -22,18 +22,8 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class OrderController extends Controller
+final class OrderController extends Controller
 {
-    protected function getEffectiveLocale(Request $request): string
-    {
-        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
-        if (!in_array($locale, ['en', 'it'], true)) {
-            $locale = 'en';
-        }
-        App::setLocale($locale);
-        return $locale;
-    }
-
     /**
      * Display a listing of orders (Inertia page).
      */
@@ -65,9 +55,9 @@ class OrderController extends Controller
         if ($search = $request->query('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('order_number', 'like', "%{$search}%")
-                  ->orWhere('customer_name', 'like', "%{$search}%")
-                  ->orWhere('table_number', 'like', "%{$search}%")
-                  ->orWhere('tracking_token', 'like', "%{$search}%");
+                    ->orWhere('customer_name', 'like', "%{$search}%")
+                    ->orWhere('table_number', 'like', "%{$search}%")
+                    ->orWhere('tracking_token', 'like', "%{$search}%");
             });
         }
 
@@ -102,7 +92,7 @@ class OrderController extends Controller
                     Order::TYPE_DINE_IN,
                     Order::TYPE_TAKEOUT,
                 ],
-                'next_order_number' => 'AB-' . random_int(1000, 9999),
+                'next_order_number' => 'AB-'.random_int(1000, 9999),
             ],
         ]);
     }
@@ -114,7 +104,7 @@ class OrderController extends Controller
     {
         $validated = $request->validated();
 
-        if (!empty($validated['idempotency_key'])) {
+        if (! empty($validated['idempotency_key'])) {
             $existing = Order::with(['items', 'payments'])
                 ->where('idempotency_key', $validated['idempotency_key'])
                 ->first();
@@ -130,8 +120,8 @@ class OrderController extends Controller
 
         $order = DB::transaction(function () use ($validated): Order {
             $order = Order::create([
-                'id' => $validated['id'] ?? ('ord-' . Str::uuid()->toString()),
-                'order_number' => $validated['order_number'] ?? ('AB-' . random_int(1000, 9999)),
+                'id' => $validated['id'] ?? ('ord-'.Str::uuid()->toString()),
+                'order_number' => $validated['order_number'] ?? ('AB-'.random_int(1000, 9999)),
                 'status' => $validated['status'] ?? Order::STATUS_PENDING,
                 'type' => $validated['type'],
                 'table_number' => $validated['table_number'] ?? null,
@@ -139,7 +129,7 @@ class OrderController extends Controller
                 'customer_phone' => $validated['customer_phone'] ?? null,
                 'notes' => $validated['notes'] ?? null,
                 'idempotency_key' => $validated['idempotency_key'] ?? null,
-                'tracking_token' => 'OT-' . strtoupper(Str::random(6)),
+                'tracking_token' => 'OT-'.mb_strtoupper(Str::random(6)),
                 'subtotal' => $validated['subtotal'],
                 'tax_total' => $validated['tax_total'],
                 'total' => $validated['total'],
@@ -147,7 +137,7 @@ class OrderController extends Controller
 
             foreach ($validated['items'] as $itemData) {
                 OrderItem::create([
-                    'id' => 'oi-' . Str::uuid()->toString(),
+                    'id' => 'oi-'.Str::uuid()->toString(),
                     'order_id' => $order->id,
                     'menu_item_id' => $itemData['menu_item_id'] ?? null,
                     'name' => $itemData['name'],
@@ -279,11 +269,22 @@ class OrderController extends Controller
         return $this->update($request, $id);
     }
 
+    protected function getEffectiveLocale(Request $request): string
+    {
+        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
+        if (! in_array($locale, ['en', 'it'], true)) {
+            $locale = 'en';
+        }
+        App::setLocale($locale);
+
+        return $locale;
+    }
+
     protected function deductInventoryForOrder(Order $order): void
     {
         foreach ($order->items as $orderItem) {
             $menuItem = $orderItem->menuItem ?? MenuItem::find($orderItem->menu_item_id);
-            if (!$menuItem || empty($menuItem->recipe) || !is_array($menuItem->recipe)) {
+            if (! $menuItem || empty($menuItem->recipe) || ! is_array($menuItem->recipe)) {
                 continue;
             }
 
@@ -296,7 +297,7 @@ class OrderController extends Controller
                 if ($invItemId && $usedQty > 0) {
                     $invItem = InventoryItem::find($invItemId);
                     InventoryTransaction::create([
-                        'id' => 'tx-' . Str::uuid()->toString(),
+                        'id' => 'tx-'.Str::uuid()->toString(),
                         'inventory_item_id' => $invItemId,
                         'inventory_item_name' => $invItem ? $invItem->name : 'Ingredient',
                         'quantity' => -$usedQty,
@@ -313,7 +314,7 @@ class OrderController extends Controller
     {
         foreach ($order->items as $orderItem) {
             $menuItem = $orderItem->menuItem ?? MenuItem::find($orderItem->menu_item_id);
-            if (!$menuItem || empty($menuItem->recipe) || !is_array($menuItem->recipe)) {
+            if (! $menuItem || empty($menuItem->recipe) || ! is_array($menuItem->recipe)) {
                 continue;
             }
 
@@ -326,13 +327,13 @@ class OrderController extends Controller
                 if ($invItemId && $usedQty > 0) {
                     $invItem = InventoryItem::find($invItemId);
                     InventoryTransaction::create([
-                        'id' => 'tx-' . Str::uuid()->toString(),
+                        'id' => 'tx-'.Str::uuid()->toString(),
                         'inventory_item_id' => $invItemId,
                         'inventory_item_name' => $invItem ? $invItem->name : 'Ingredient',
                         'quantity' => $usedQty,
                         'type' => InventoryTransaction::TYPE_CANCELLATION_REVERSAL,
                         'reference' => "Cancelled #{$order->order_number} Reversal",
-                        'notes' => "Restored ingredients from cancelled order",
+                        'notes' => 'Restored ingredients from cancelled order',
                     ]);
                 }
             }

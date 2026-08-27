@@ -1,5 +1,6 @@
 import React from 'react';
-import { useRestaurant } from '../../context/RestaurantContext';
+import { router } from '@inertiajs/react';
+import { useRestaurant } from '../../Context/RestaurantContext';
 import { 
   Calculator, 
   ReceiptText, 
@@ -100,7 +101,7 @@ export const AdminLayout: React.FC = () => {
     const stock = inventoryTransactions
       .filter(t => t.inventory_item_id === item.id)
       .reduce((sum, t) => sum + t.quantity, 0);
-    return stock <= item.reorder_threshold;
+    return stock <= item.low_stock_threshold;
   }).length;
 
   // Role Permissions Guard
@@ -246,6 +247,18 @@ export const AdminLayout: React.FC = () => {
                             onClick={() => {
                               if (isAllowed) {
                                 setActiveAdminTab(item.id);
+                                const routeMap: Record<string, string> = {
+                                  pos: '/pos',
+                                  orders: '/orders',
+                                  kitchen: '/kitchen',
+                                  menu: '/menu',
+                                  inventory: '/inventory',
+                                  users: '/users',
+                                  roles: '/users',
+                                };
+                                if (routeMap[item.id]) {
+                                  router.visit(routeMap[item.id]);
+                                }
                               }
                             }}
                             className={`relative transition-all rounded-xl ${
@@ -303,7 +316,10 @@ export const AdminLayout: React.FC = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setActiveSurface('public_menu')}
+              onClick={() => {
+                setActiveSurface('public_menu');
+                router.visit('/');
+              }}
               className="w-full justify-start gap-2 h-9 text-xs border-stone-800 hover:border-amber-500/50 hover:bg-stone-800 text-stone-300 hover:text-amber-400 rounded-xl group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center"
               title="Switch to Customer Storefront"
             >
@@ -333,7 +349,7 @@ export const AdminLayout: React.FC = () => {
                       {currentUser?.name || 'Staff User'}
                     </span>
                     <span className="text-[10px] text-amber-400 font-mono capitalize truncate">
-                      {currentUser?.role.replace('_', ' ') || 'cashier'}
+                      {currentUser?.role?.replace('_', ' ') || 'cashier'}
                     </span>
                   </div>
 
@@ -347,40 +363,10 @@ export const AdminLayout: React.FC = () => {
                   <p className="text-[10px] text-stone-400 font-mono">{currentUser?.email}</p>
                   <div className="mt-1">
                     <Badge variant="amber" className="text-[9px] uppercase font-mono">
-                      {currentUser?.role.replace('_', ' ')}
+                      {currentUser?.role?.replace('_', ' ') || 'cashier'}
                     </Badge>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                
-                <DropdownMenuLabel className="text-[10px] text-stone-500 uppercase font-bold px-2 py-1">
-                  Switch Active Role
-                </DropdownMenuLabel>
-
-                {users.map(u => (
-                  <DropdownMenuItem
-                    key={u.id}
-                    onClick={() => quickLogin(u.role, u.email)}
-                    className={`flex items-center justify-between p-2 rounded-lg cursor-pointer text-xs ${
-                      currentUser?.id === u.id ? 'bg-amber-500/15 text-amber-300 font-bold' : 'text-stone-300 hover:text-stone-100 hover:bg-stone-800'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Avatar className="size-6">
-                        <AvatarImage src={u.avatar} />
-                        <AvatarFallback className="text-[10px]">{u.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-xs font-medium text-stone-200">{u.name}</p>
-                        <p className="text-[9px] text-stone-400 capitalize">{u.role.replace('_', ' ')}</p>
-                      </div>
-                    </div>
-                    {currentUser?.id === u.id && (
-                      <span className="size-1.5 rounded-full bg-amber-400" />
-                    )}
-                  </DropdownMenuItem>
-                ))}
-
                 <DropdownMenuSeparator className="bg-stone-800" />
                 
                 <DropdownMenuItem
@@ -481,7 +467,10 @@ export const AdminLayout: React.FC = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setActiveSurface('public_menu')}
+                onClick={() => {
+                  setActiveSurface('public_menu');
+                  router.visit('/');
+                }}
                 className="h-8 text-xs border-stone-800 hover:border-amber-500/50 hover:bg-stone-900 text-stone-300 hover:text-amber-400 gap-1.5 rounded-xl"
               >
                 <Store className="size-3.5 text-amber-400" />

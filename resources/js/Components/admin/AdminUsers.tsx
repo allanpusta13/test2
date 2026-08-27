@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { useRestaurant } from '../../context/RestaurantContext';
+import { router } from '@inertiajs/react';
+import { useRestaurant } from '../../Context/RestaurantContext';
+import { laravelApi, formatLaravelErrors } from '../../lib/api';
 import { 
   Users, 
   UserPlus, 
@@ -71,39 +73,46 @@ export const AdminUsers: React.FC = () => {
     setIsUserModalOpen(true);
   };
 
-  const handleSaveUser = () => {
+  const handleSaveUser = async () => {
     if (!name.trim() || !email.trim()) return;
 
-    if (editingUser) {
-      setUsers(prev =>
-        prev.map(u =>
-          u.id === editingUser.id
-            ? { ...u, name: name.trim(), email: email.trim(), role, avatar: avatar.trim() || u.avatar }
-            : u
-        )
-      );
-    } else {
-      const newUser: User = {
-        id: `usr-${Date.now()}`,
-        name: name.trim(),
-        email: email.trim(),
-        role,
-        avatar: avatar.trim() || `https://images.unsplash.com/photo-${1534528741775 + users.length}?auto=format&fit=crop&w=120&q=80`,
-        created_at: new Date().toISOString(),
-      };
-      setUsers(prev => [...prev, newUser]);
+    try {
+      if (editingUser) {
+        await laravelApi.users.updateUser(editingUser.id, {
+          name: name.trim(),
+          email: email.trim(),
+          role_id: role === 'admin' ? 'role-admin' : role === 'cashier' ? 'role-cashier' : 'role-kitchen-staff',
+          avatar: avatar.trim() || undefined,
+        });
+      } else {
+        await laravelApi.users.createUser({
+          name: name.trim(),
+          email: email.trim(),
+          role_id: role === 'admin' ? 'role-admin' : role === 'cashier' ? 'role-cashier' : 'role-kitchen-staff',
+          avatar: avatar.trim() || undefined,
+        });
+      }
+      router.reload({ only: ['users'] });
+      setIsUserModalOpen(false);
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      alert(errors.join('\n'));
     }
-
-    setIsUserModalOpen(false);
   };
 
-  const handleDeleteUser = (id: string) => {
+  const handleDeleteUser = async (id: string) => {
     if (id === currentUser?.id) {
       alert('You cannot delete your own active user account.');
       return;
     }
     if (confirm('Are you sure you want to deactivate this staff account?')) {
-      setUsers(prev => prev.filter(u => u.id !== id));
+      try {
+        await laravelApi.users.deleteUser(id);
+        router.reload({ only: ['users'] });
+      } catch (err) {
+        const errors = formatLaravelErrors(err);
+        alert(errors.join('\n'));
+      }
     }
   };
 
@@ -168,7 +177,7 @@ export const AdminUsers: React.FC = () => {
             className="text-[10px] capitalize gap-1 font-bold"
           >
             {getRoleIcon(r)}
-            <span>{r.replace('_', ' ')}</span>
+            <span>{r?.replace('_', ' ') || 'unknown'}</span>
           </Badge>
         );
       },

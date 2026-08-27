@@ -6,7 +6,7 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreUserRequest extends FormRequest
+final class StoreUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -19,7 +19,7 @@ class StoreUserRequest extends FormRequest
             'id' => ['nullable', 'string', 'max:50', 'unique:users,id'],
             'name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'email', 'max:150', 'unique:users,email'],
-            'role' => ['required', 'string', 'in:admin,cashier,kitchen_staff'],
+            'role_id' => ['required', 'string', 'exists:roles,id'],
             'avatar' => ['nullable', 'string', 'max:500'],
             'password' => ['nullable', 'string', 'min:6'],
         ];

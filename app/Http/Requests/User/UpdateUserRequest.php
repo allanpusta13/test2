@@ -6,7 +6,7 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUserRequest extends FormRequest
+final class UpdateUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -19,8 +19,8 @@ class UpdateUserRequest extends FormRequest
 
         return [
             'name' => ['sometimes', 'required', 'string', 'max:150'],
-            'email' => ['sometimes', 'required', 'email', 'max:150', 'unique:users,email,' . $userId],
-            'role' => ['sometimes', 'required', 'string', 'in:admin,cashier,kitchen_staff'],
+            'email' => ['sometimes', 'required', 'email', 'max:150', 'unique:users,email,'.$userId],
+            'role_id' => ['sometimes', 'required', 'string', 'exists:roles,id'],
             'avatar' => ['nullable', 'string', 'max:500'],
             'password' => ['nullable', 'string', 'min:6'],
         ];

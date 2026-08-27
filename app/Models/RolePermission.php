@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-class RolePermission
+final class RolePermission
 {
     public static function all(): array
     {

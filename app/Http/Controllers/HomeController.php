@@ -19,18 +19,8 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class HomeController extends Controller
+final class HomeController extends Controller
 {
-    protected function getEffectiveLocale(Request $request): string
-    {
-        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
-        if (!in_array($locale, ['en', 'it'], true)) {
-            $locale = 'en';
-        }
-        App::setLocale($locale);
-        return $locale;
-    }
-
     /**
      * Display public customer digital menu (Inertia page).
      */
@@ -134,7 +124,7 @@ class HomeController extends Controller
     {
         $validated = $request->validated();
 
-        if (!empty($validated['idempotency_key'])) {
+        if (! empty($validated['idempotency_key'])) {
             $existing = Order::with(['items', 'payments'])
                 ->where('idempotency_key', $validated['idempotency_key'])
                 ->first();
@@ -150,8 +140,8 @@ class HomeController extends Controller
 
         $order = DB::transaction(function () use ($validated): Order {
             $order = Order::create([
-                'id' => $validated['id'] ?? ('ord-' . Str::uuid()->toString()),
-                'order_number' => $validated['order_number'] ?? ('AB-' . random_int(1000, 9999)),
+                'id' => $validated['id'] ?? ('ord-'.Str::uuid()->toString()),
+                'order_number' => $validated['order_number'] ?? ('AB-'.random_int(1000, 9999)),
                 'status' => Order::STATUS_PENDING,
                 'type' => $validated['type'],
                 'table_number' => $validated['table_number'] ?? null,
@@ -159,7 +149,7 @@ class HomeController extends Controller
                 'customer_phone' => $validated['customer_phone'] ?? null,
                 'notes' => $validated['notes'] ?? null,
                 'idempotency_key' => $validated['idempotency_key'] ?? null,
-                'tracking_token' => 'OT-' . strtoupper(Str::random(6)),
+                'tracking_token' => 'OT-'.mb_strtoupper(Str::random(6)),
                 'subtotal' => $validated['subtotal'],
                 'tax_total' => $validated['tax_total'],
                 'total' => $validated['total'],
@@ -167,7 +157,7 @@ class HomeController extends Controller
 
             foreach ($validated['items'] as $itemData) {
                 OrderItem::create([
-                    'id' => 'oi-' . Str::uuid()->toString(),
+                    'id' => 'oi-'.Str::uuid()->toString(),
                     'order_id' => $order->id,
                     'menu_item_id' => $itemData['menu_item_id'] ?? null,
                     'name' => $itemData['name'],
@@ -195,5 +185,16 @@ class HomeController extends Controller
     public function order(StoreOrderRequest $request): JsonResponse
     {
         return $this->store($request);
+    }
+
+    protected function getEffectiveLocale(Request $request): string
+    {
+        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
+        if (! in_array($locale, ['en', 'it'], true)) {
+            $locale = 'en';
+        }
+        App::setLocale($locale);
+
+        return $locale;
     }
 }

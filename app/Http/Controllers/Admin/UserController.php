@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Models\Role;
 use App\Models\User;
 use App\Services\RestaurantDataService;
 use Illuminate\Http\JsonResponse;
@@ -17,18 +18,8 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class UserController extends Controller
+final class UserController extends Controller
 {
-    protected function getEffectiveLocale(Request $request): string
-    {
-        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
-        if (!in_array($locale, ['en', 'it'], true)) {
-            $locale = 'en';
-        }
-        App::setLocale($locale);
-        return $locale;
-    }
-
     /**
      * Display a listing of users/staff (Inertia page).
      */
@@ -47,16 +38,19 @@ class UserController extends Controller
      */
     public function list(Request $request): JsonResponse
     {
-        $query = User::orderBy('name');
+        $query = User::with('associatedRole')->orderBy('name');
 
         if ($role = $request->query('role')) {
-            $query->where('role', $role);
+            $query->whereHas('associatedRole', function ($q) use ($role) {
+                $q->where('name', $role);
+            });
         }
 
         if ($search = $request->query('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+            $escaped = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search);
+            $query->where(function ($q) use ($escaped) {
+                $q->where('name', 'like', "%{$escaped}%")
+                    ->orWhere('email', 'like', "%{$escaped}%");
             });
         }
 
@@ -77,11 +71,10 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'roles' => [
-                    ['id' => User::ROLE_ADMIN, 'name' => 'Store Administrator', 'description' => 'Full access to all operations, menu, stock, reports, and team'],
-                    ['id' => User::ROLE_CASHIER, 'name' => 'Front Desk Cashier', 'description' => 'Create orders, collect cash payments, print receipts'],
-                    ['id' => User::ROLE_KITCHEN_STAFF, 'name' => 'Line Cook / Kitchen Staff', 'description' => 'View KDS tickets, bump orders, review recipes and prep'],
-                ],
+                'roles' => Role::all()->map(fn ($role) => [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                ]),
             ],
         ]);
     }
@@ -94,7 +87,7 @@ class UserController extends Controller
         $validated = $request->validated();
 
         if (empty($validated['id'])) {
-            $validated['id'] = 'usr-' . Str::uuid()->toString();
+            $validated['id'] = 'usr-'.Str::uuid()->toString();
         }
 
         if (empty($validated['password'])) {
@@ -128,17 +121,16 @@ class UserController extends Controller
      */
     public function edit(string $id): JsonResponse
     {
-        $user = User::findOrFail($id);
+        $user = User::with('associatedRole')->findOrFail($id);
 
         return response()->json([
             'success' => true,
             'data' => [
                 'user' => $user,
-                'roles' => [
-                    ['id' => User::ROLE_ADMIN, 'name' => 'Store Administrator'],
-                    ['id' => User::ROLE_CASHIER, 'name' => 'Front Desk Cashier'],
-                    ['id' => User::ROLE_KITCHEN_STAFF, 'name' => 'Line Cook / Kitchen Staff'],
-                ],
+                'roles' => Role::all()->map(fn ($role) => [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                ]),
             ],
         ]);
     }
@@ -171,7 +163,14 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if (User::where('role', User::ROLE_ADMIN)->count() <= 1 && $user->role === User::ROLE_ADMIN) {
+        if ($id === auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot delete your own active user account.',
+            ], 422);
+        }
+
+        if (User::whereHas('associatedRole', fn ($q) => $q->where('name', User::ROLE_ADMIN))->count() <= 1 && $user->role === User::ROLE_ADMIN) {
             return response()->json([
                 'success' => false,
                 'message' => 'Cannot delete the only remaining Store Administrator.',
@@ -205,5 +204,16 @@ class UserController extends Controller
             'success' => true,
             'data' => $permissions,
         ]);
+    }
+
+    protected function getEffectiveLocale(Request $request): string
+    {
+        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
+        if (! in_array($locale, ['en', 'it'], true)) {
+            $locale = 'en';
+        }
+        App::setLocale($locale);
+
+        return $locale;
     }
 }

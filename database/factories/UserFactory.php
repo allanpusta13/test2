@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -26,10 +27,12 @@ final class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => 'usr-'.Str::uuid()->toString(),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => self::$password ??= Hash::make('password'),
+            'role_id' => 'role-cashier',
             'remember_token' => Str::random(10),
         ];
     }
@@ -41,6 +44,21 @@ final class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes): array => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Set the user's role by role name.
+     */
+    public function role(string $roleName): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'role_id' => match ($roleName) {
+                Role::ROLE_ADMIN => 'role-admin',
+                Role::ROLE_CASHIER => 'role-cashier',
+                Role::ROLE_KITCHEN_STAFF => 'role-kitchen-staff',
+                default => $roleName,
+            },
         ]);
     }
 }

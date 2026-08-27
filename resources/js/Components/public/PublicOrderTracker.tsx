@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useRestaurant } from '../../context/RestaurantContext';
+import React, { useState, useEffect } from 'react';
+import { useRestaurant } from '../../Context/RestaurantContext';
+import { laravelApi, formatLaravelErrors } from '../../lib/api';
 import { 
   Search, 
   ReceiptText, 
@@ -38,21 +39,41 @@ export const PublicOrderTracker: React.FC = () => {
 
   const [searchToken, setSearchToken] = useState(activeTrackingToken || '');
   const [copiedToken, setCopiedToken] = useState(false);
+  const [trackedOrder, setTrackedOrder] = useState<any>(null);
+  const [isLoadingOrder, setIsLoadingOrder] = useState(false);
+  const [lookupError, setLookupError] = useState<string | null>(null);
 
-  // Find order by matching tracking token or order number
-  const currentOrder = orders.find(
-    o =>
-      (searchToken && o.tracking_token.toLowerCase() === searchToken.trim().toLowerCase()) ||
-      (searchToken && o.order_number.toLowerCase() === searchToken.trim().toLowerCase()) ||
-      (activeTrackingToken && o.tracking_token === activeTrackingToken)
-  );
-
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchToken.trim()) {
+    if (!searchToken.trim()) return;
+
+    setIsLoadingOrder(true);
+    setLookupError(null);
+
+    try {
+      const result = await laravelApi.tracker.lookup(searchToken.trim());
+      setTrackedOrder(result);
       setActiveTrackingToken(searchToken.trim().toUpperCase());
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      setLookupError(errors.join('\n'));
+      setTrackedOrder(null);
+    } finally {
+      setIsLoadingOrder(false);
     }
   };
+
+  useEffect(() => {
+    if (activeTrackingToken && !trackedOrder) {
+      handleSearch({ preventDefault: () => {} } as React.FormEvent);
+    }
+  }, [activeTrackingToken]);
+
+  const currentOrder = trackedOrder || orders.find(
+    o =>
+      (searchToken && o.tracking_token.toLowerCase() === searchToken.trim().toLowerCase()) ||
+      (searchToken && o.order_number.toLowerCase() === searchToken.trim().toLowerCase())
+  );
 
   const getStepState = (targetStatus: OrderStatus, currentStatus: OrderStatus) => {
     const sequence: OrderStatus[] = ['pending', 'preparing', 'ready', 'completed'];
@@ -104,11 +125,19 @@ export const PublicOrderTracker: React.FC = () => {
             </div>
             <Button
               type="submit"
+              disabled={isLoadingOrder}
               className="h-10 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs rounded-xl px-4"
             >
-              Lookup Ticket
+              {isLoadingOrder ? 'Looking up...' : 'Lookup Ticket'}
             </Button>
           </form>
+
+          {lookupError && (
+            <div className="p-3 rounded-xl bg-red-950/40 border border-red-500/30 text-red-300 text-xs flex items-center gap-2 max-w-md">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{lookupError}</span>
+            </div>
+          )}
 
           {/* Quick links for demo */}
           <div className="flex items-center gap-2 text-xs text-stone-400 flex-wrap pt-1">

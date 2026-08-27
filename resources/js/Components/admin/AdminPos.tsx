@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { useRestaurant } from '../../context/RestaurantContext';
+import { router } from '@inertiajs/react';
+import { useRestaurant } from '../../Context/RestaurantContext';
+import { laravelApi, formatLaravelErrors } from '../../lib/api';
 import { 
   Search, 
   Plus, 
@@ -42,8 +44,6 @@ export const AdminPos: React.FC = () => {
     categories,
     menuItems,
     orders,
-    createOrder,
-    recordCashPayment,
     printEscPosReceipt,
     setReceiptModalOrder,
     setViewingOrder,
@@ -184,7 +184,7 @@ export const AdminPos: React.FC = () => {
     setIsPaymentModalOpen(true);
   };
 
-  const handleProcessCashOrder = (tenderAmount: number) => {
+  const handleProcessCashOrder = async (tenderAmount: number) => {
     if (!isCashierOrAdmin) {
       setPaymentError('Payment failed: Only authorized Cashiers can tender cash at the counter.');
       return;
@@ -196,33 +196,28 @@ export const AdminPos: React.FC = () => {
     }
 
     try {
-      // 1. Create order
-      const newOrder = createOrder({
+      const result = await laravelApi.pos.createOrder({
         customer_name: customerName.trim() || 'Walk-in Guest',
         type: orderType,
         table_number: orderType === 'dine_in' ? tableNumber : undefined,
         notes: notes.trim() || undefined,
         items: posItems,
-        status: 'pending',
       });
 
-      // 2. Record cash payment by Cashier
-      recordCashPayment(
-        newOrder.id, 
-        grandTotal, 
-        tenderAmount, 
-        `Tendered $${tenderAmount.toFixed(2)} cash at counter register by Cashier ${currentUser.name}`
-      );
+      await laravelApi.pos.recordPayment({
+        order_id: result.id,
+        amount: grandTotal,
+        tendered: tenderAmount,
+        notes: `Tendered $${tenderAmount.toFixed(2)} cash at counter register by Cashier ${currentUser.name}`,
+        cashier_name: currentUser.name,
+      });
 
-      // 3. Trigger ESC/POS print job
-      printEscPosReceipt(newOrder);
-
-      // 4. Reset POS state & open receipt modal
+      router.reload({ only: ['orders'] });
       setIsPaymentModalOpen(false);
       clearPosTicket();
-      setReceiptModalOrder(newOrder);
-    } catch (err: any) {
-      setPaymentError(err?.message || 'Failed to process cash transaction');
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      setPaymentError(errors.join('\n'));
     }
   };
 

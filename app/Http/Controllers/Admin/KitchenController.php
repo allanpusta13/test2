@@ -20,18 +20,8 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class KitchenController extends Controller
+final class KitchenController extends Controller
 {
-    protected function getEffectiveLocale(Request $request): string
-    {
-        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
-        if (!in_array($locale, ['en', 'it'], true)) {
-            $locale = 'en';
-        }
-        App::setLocale($locale);
-        return $locale;
-    }
-
     /**
      * Display Kitchen Display System (KDS) Screen (Inertia page).
      */
@@ -203,11 +193,22 @@ class KitchenController extends Controller
         return $this->update($request, $id);
     }
 
+    protected function getEffectiveLocale(Request $request): string
+    {
+        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
+        if (! in_array($locale, ['en', 'it'], true)) {
+            $locale = 'en';
+        }
+        App::setLocale($locale);
+
+        return $locale;
+    }
+
     protected function deductInventoryForOrder(Order $order): void
     {
         foreach ($order->items as $orderItem) {
             $menuItem = $orderItem->menuItem ?? MenuItem::find($orderItem->menu_item_id);
-            if (!$menuItem || empty($menuItem->recipe) || !is_array($menuItem->recipe)) {
+            if (! $menuItem || empty($menuItem->recipe) || ! is_array($menuItem->recipe)) {
                 continue;
             }
 
@@ -220,7 +221,7 @@ class KitchenController extends Controller
                 if ($invItemId && $usedQty > 0) {
                     $invItem = InventoryItem::find($invItemId);
                     InventoryTransaction::create([
-                        'id' => 'tx-' . Str::uuid()->toString(),
+                        'id' => 'tx-'.Str::uuid()->toString(),
                         'inventory_item_id' => $invItemId,
                         'inventory_item_name' => $invItem ? $invItem->name : 'Ingredient',
                         'quantity' => -$usedQty,
@@ -237,7 +238,7 @@ class KitchenController extends Controller
     {
         foreach ($order->items as $orderItem) {
             $menuItem = $orderItem->menuItem ?? MenuItem::find($orderItem->menu_item_id);
-            if (!$menuItem || empty($menuItem->recipe) || !is_array($menuItem->recipe)) {
+            if (! $menuItem || empty($menuItem->recipe) || ! is_array($menuItem->recipe)) {
                 continue;
             }
 
@@ -250,13 +251,13 @@ class KitchenController extends Controller
                 if ($invItemId && $usedQty > 0) {
                     $invItem = InventoryItem::find($invItemId);
                     InventoryTransaction::create([
-                        'id' => 'tx-' . Str::uuid()->toString(),
+                        'id' => 'tx-'.Str::uuid()->toString(),
                         'inventory_item_id' => $invItemId,
                         'inventory_item_name' => $invItem ? $invItem->name : 'Ingredient',
                         'quantity' => $usedQty,
                         'type' => InventoryTransaction::TYPE_CANCELLATION_REVERSAL,
                         'reference' => "Cancelled #{$order->order_number} Reversal",
-                        'notes' => "Restored ingredients from cancelled order",
+                        'notes' => 'Restored ingredients from cancelled order',
                     ]);
                 }
             }

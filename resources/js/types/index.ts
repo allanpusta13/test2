@@ -128,7 +128,7 @@ export interface Order {
   updated_at: string;
 }
 
-export interface InventoryItem {
+export interface InventoryItem extends Record<string, unknown> {
   id: string;
   name: string;
   unit: string;
@@ -139,7 +139,7 @@ export interface InventoryItem {
 
 export type TransactionType = 'restock' | 'prep_deduction' | 'waste' | 'audit_adjustment' | 'cancellation_reversal';
 
-export interface InventoryTransaction {
+export interface InventoryTransaction extends Record<string, unknown> {
   id: string;
   inventory_item_id: string;
   inventory_item_name: string;
@@ -204,6 +204,21 @@ export interface AppRoutes {
 
 export type TranslationMap = Record<string, any>;
 
+export interface SidebarNavItem {
+  id: string;
+  title: string;
+  icon: string;
+  route: string;
+  badge?: string;
+  badgeVariant?: string;
+  count?: string;
+}
+
+export interface SidebarNavGroup {
+  label: string;
+  items: SidebarNavItem[];
+}
+
 export interface PageProps<T = Record<string, unknown>> {
   auth?: {
     user: User | null;
@@ -224,6 +239,7 @@ export interface PageProps<T = Record<string, unknown>> {
   orders?: Order[];
   users?: User[];
   rolesPermissions?: RolePermission[];
+  sidebarNav?: SidebarNavGroup[];
   currentSurface?: AppSurface;
   currentAdminTab?: AdminView;
   token?: string;

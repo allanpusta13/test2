@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { ColumnDef } from '@tanstack/react-table';
-import { useRestaurant } from '../../context/RestaurantContext';
+import type { ColumnDef } from '@tanstack/react-table';
+import { router } from '@inertiajs/react';
+import { useRestaurant } from '../../Context/RestaurantContext';
+import { laravelApi, formatLaravelErrors } from '../../lib/api';
 import { 
   Boxes, 
   Plus, 
@@ -34,7 +36,6 @@ export const AdminInventory: React.FC = () => {
     inventoryItems,
     inventoryTransactions,
     getStock,
-    addInventoryTransaction,
   } = useRestaurant();
 
   const [activeTab, setActiveTab] = useState<'stock_levels' | 'audit_ledger'>('stock_levels');
@@ -111,24 +112,29 @@ export const AdminInventory: React.FC = () => {
     setIsAuditModalOpen(true);
   };
 
-  const handleSaveTransaction = () => {
+  const handleSaveTransaction = async () => {
     const qty = Number(txQuantity);
     if (!selectedItemId || isNaN(qty) || qty === 0) return;
 
     const signedQty = txType === 'waste' ? -Math.abs(qty) : Math.abs(qty);
 
-    addInventoryTransaction(
-      selectedItemId,
-      signedQty,
-      txType,
-      txReference || 'Manual Entry',
-      txNotes
-    );
-
-    setIsTxModalOpen(false);
+    try {
+      await laravelApi.inventory.recordTransaction({
+        inventory_item_id: selectedItemId,
+        quantity: signedQty,
+        type: txType,
+        reference: txReference || 'Manual Entry',
+        notes: txNotes || undefined,
+      });
+      router.reload({ only: ['inventoryItems', 'inventoryTransactions'] });
+      setIsTxModalOpen(false);
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      alert(errors.join('\n'));
+    }
   };
 
-  const handleSaveAudit = () => {
+  const handleSaveAudit = async () => {
     const counted = Number(physicalCount);
     if (!auditItemId || isNaN(counted)) return;
 
@@ -136,20 +142,27 @@ export const AdminInventory: React.FC = () => {
     const delta = Number((counted - currentDerived).toFixed(2));
 
     if (delta !== 0) {
-      addInventoryTransaction(
-        auditItemId,
-        delta,
-        'audit_adjustment',
-        `Stocktake Adjustment (Diff: ${delta > 0 ? '+' : ''}${delta})`,
-        auditNotes || 'Physical inventory audit variance correction'
-      );
+      try {
+        await laravelApi.inventory.recordTransaction({
+          inventory_item_id: auditItemId,
+          quantity: delta,
+          type: 'audit_adjustment',
+          reference: `Stocktake Adjustment (Diff: ${delta > 0 ? '+' : ''}${delta})`,
+          notes: auditNotes || 'Physical inventory audit variance correction',
+        });
+        router.reload({ only: ['inventoryItems', 'inventoryTransactions'] });
+        setIsAuditModalOpen(false);
+      } catch (err) {
+        const errors = formatLaravelErrors(err);
+        alert(errors.join('\n'));
+      }
+    } else {
+      setIsAuditModalOpen(false);
     }
-
-    setIsAuditModalOpen(false);
   };
 
   // DataTable columns for Stock Balances
-  const stockColumns = useMemo<ColumnDef<InventoryItem>[]>(() => [
+  const stockColumns: ColumnDef<InventoryItem, unknown>[] = useMemo(() => [
     {
       accessorKey: 'name',
       header: ({ column }) => (
@@ -265,7 +278,7 @@ export const AdminInventory: React.FC = () => {
   ], [getStock]);
 
   // DataTable columns for Audit Ledger Stream
-  const ledgerColumns = useMemo<ColumnDef<InventoryTransaction>[]>(() => [
+  const ledgerColumns = useMemo<ColumnDef<InventoryTransaction, unknown>[]>(() => [
     {
       accessorKey: 'created_at',
       header: ({ column }) => (
@@ -500,7 +513,7 @@ export const AdminInventory: React.FC = () => {
             })}
           </div>
 
-          <DataTable
+          <DataTable<InventoryTransaction, unknown>
             columns={ledgerColumns}
             data={filteredTransactions}
             searchPlaceholder="Search ledger by ingredient, reference, or notes..."

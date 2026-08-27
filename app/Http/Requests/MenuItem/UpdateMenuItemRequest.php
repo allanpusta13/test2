@@ -6,7 +6,7 @@ namespace App\Http\Requests\MenuItem;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateMenuItemRequest extends FormRequest
+final class UpdateMenuItemRequest extends FormRequest
 {
     public function authorize(): bool
     {

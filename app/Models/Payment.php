@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
-class Payment extends Model
+final class Payment extends Model
 {
     use HasFactory;
+
+    public $incrementing = false;
 
     protected $fillable = [
         'id',
@@ -26,7 +28,6 @@ class Payment extends Model
     ];
 
     protected $keyType = 'string';
-    public $incrementing = false;
 
     protected $casts = [
         'amount' => 'float',
@@ -34,25 +35,25 @@ class Payment extends Model
         'change_returned' => 'float',
     ];
 
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class, 'order_id');
+    }
+
     protected static function boot(): void
     {
         parent::boot();
 
-        static::creating(function (Payment $payment): void {
+        self::creating(function (Payment $payment): void {
             if (empty($payment->id)) {
-                $payment->id = 'pay-' . Str::uuid()->toString();
+                $payment->id = 'pay-'.Str::uuid()->toString();
             }
             if (empty($payment->method)) {
                 $payment->method = 'cash';
             }
-            if ($payment->tendered > 0 && $payment->amount > 0 && !isset($payment->change_returned)) {
+            if ($payment->tendered > 0 && $payment->amount > 0 && ! isset($payment->change_returned)) {
                 $payment->change_returned = max(0.0, round((float) $payment->tendered - (float) $payment->amount, 2));
             }
         });
-    }
-
-    public function order(): BelongsTo
-    {
-        return $this->belongsTo(Order::class, 'order_id');
     }
 }

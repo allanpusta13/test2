@@ -22,7 +22,7 @@ export function DataTableColumnHeader<TData, TValue>({
   title,
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
-  if (!column.getCanSort()) {
+  if (!column.getCanSort || typeof column.getCanSort !== "function" || !column.getCanSort()) {
     return <div className={cn("text-[10px] font-bold uppercase tracking-wider text-stone-400", className)}>{title}</div>
   }
 

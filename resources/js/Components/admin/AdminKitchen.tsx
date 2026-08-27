@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useRestaurant } from '../../context/RestaurantContext';
+import { router } from '@inertiajs/react';
+import { useRestaurant } from '../../Context/RestaurantContext';
+import { laravelApi, formatLaravelErrors } from '../../lib/api';
 import { 
   ChefHat, 
   Clock, 
@@ -37,7 +39,6 @@ import { Order, OrderStatus } from '../../types';
 export const AdminKitchen: React.FC = () => {
   const {
     orders,
-    updateOrderStatus,
     menuItems,
     inventoryItems,
     currentUser,
@@ -96,11 +97,21 @@ export const AdminKitchen: React.FC = () => {
     }
   };
 
+  const handleUpdateStatus = async (orderId: string, status: OrderStatus) => {
+    try {
+      await laravelApi.orders.updateStatus(orderId, status);
+      router.reload({ only: ['orders'] });
+    } catch (err) {
+      const errors = formatLaravelErrors(err);
+      alert(errors.join('\n'));
+    }
+  };
+
   const handleDrop = (e: React.DragEvent, targetStatus: OrderStatus) => {
     e.preventDefault();
     const orderId = e.dataTransfer.getData('text/plain') || draggedOrderId;
     if (orderId) {
-      updateOrderStatus(orderId, targetStatus);
+      handleUpdateStatus(orderId, targetStatus);
     }
     setDraggedOrderId(null);
     setDragOverColumn(null);
@@ -245,7 +256,7 @@ export const AdminKitchen: React.FC = () => {
           {/* Quick Primary Bump Button */}
           {stage === 'pending' && (
             <Button
-              onClick={() => updateOrderStatus(order.id, 'preparing')}
+              onClick={() => handleUpdateStatus(order.id, 'preparing')}
               className="flex-1 h-10 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs rounded-xl gap-2 shadow-sm"
             >
               <Flame className="w-4 h-4" />
@@ -255,7 +266,7 @@ export const AdminKitchen: React.FC = () => {
 
           {stage === 'preparing' && (
             <Button
-              onClick={() => updateOrderStatus(order.id, 'ready')}
+              onClick={() => handleUpdateStatus(order.id, 'ready')}
               className="flex-1 h-10 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs rounded-xl gap-2 shadow-sm"
             >
               <CheckCircle2 className="w-4 h-4" />
@@ -265,7 +276,7 @@ export const AdminKitchen: React.FC = () => {
 
           {stage === 'ready' && (
             <Button
-              onClick={() => updateOrderStatus(order.id, 'completed')}
+              onClick={() => handleUpdateStatus(order.id, 'completed')}
               className="flex-1 h-10 bg-stone-800 hover:bg-stone-700 text-stone-200 font-bold text-xs rounded-xl gap-2"
             >
               <CheckCheck className="w-4 h-4 text-emerald-400" />
@@ -275,7 +286,7 @@ export const AdminKitchen: React.FC = () => {
 
           {stage === 'completed' && (
             <Button
-              onClick={() => updateOrderStatus(order.id, 'ready')}
+              onClick={() => handleUpdateStatus(order.id, 'ready')}
               variant="outline"
               className="flex-1 h-10 border-stone-800 hover:bg-stone-900 text-stone-300 hover:text-amber-400 font-bold text-xs rounded-xl gap-1.5"
             >
@@ -305,7 +316,7 @@ export const AdminKitchen: React.FC = () => {
 
               <DropdownMenuItem
                 disabled={order.status === 'pending'}
-                onClick={() => updateOrderStatus(order.id, 'pending')}
+                onClick={() => handleUpdateStatus(order.id, 'pending')}
                 className="text-xs text-amber-300 font-bold py-2 cursor-pointer focus:bg-amber-500/20 rounded-xl"
               >
                 <Clock className="w-3.5 h-3.5 mr-2 text-amber-400" />
@@ -314,7 +325,7 @@ export const AdminKitchen: React.FC = () => {
 
               <DropdownMenuItem
                 disabled={order.status === 'preparing'}
-                onClick={() => updateOrderStatus(order.id, 'preparing')}
+                onClick={() => handleUpdateStatus(order.id, 'preparing')}
                 className="text-xs text-orange-300 font-bold py-2 cursor-pointer focus:bg-orange-500/20 rounded-xl"
               >
                 <Flame className="w-3.5 h-3.5 mr-2 text-orange-400" />
@@ -323,7 +334,7 @@ export const AdminKitchen: React.FC = () => {
 
               <DropdownMenuItem
                 disabled={order.status === 'ready'}
-                onClick={() => updateOrderStatus(order.id, 'ready')}
+                onClick={() => handleUpdateStatus(order.id, 'ready')}
                 className="text-xs text-emerald-300 font-bold py-2 cursor-pointer focus:bg-emerald-500/20 rounded-xl"
               >
                 <CheckCircle2 className="w-3.5 h-3.5 mr-2 text-emerald-400" />
@@ -332,7 +343,7 @@ export const AdminKitchen: React.FC = () => {
 
               <DropdownMenuItem
                 disabled={order.status === 'completed'}
-                onClick={() => updateOrderStatus(order.id, 'completed')}
+                onClick={() => handleUpdateStatus(order.id, 'completed')}
                 className="text-xs text-stone-300 font-bold py-2 cursor-pointer focus:bg-stone-800 rounded-xl"
               >
                 <Archive className="w-3.5 h-3.5 mr-2 text-stone-400" />
@@ -343,7 +354,7 @@ export const AdminKitchen: React.FC = () => {
 
               <DropdownMenuItem
                 disabled={order.status === 'cancelled'}
-                onClick={() => updateOrderStatus(order.id, 'cancelled')}
+                onClick={() => handleUpdateStatus(order.id, 'cancelled')}
                 className="text-xs text-red-400 font-bold py-2 cursor-pointer focus:bg-red-500/20 rounded-xl"
               >
                 <Ban className="w-3.5 h-3.5 mr-2 text-red-400" />

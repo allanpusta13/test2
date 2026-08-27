@@ -20,18 +20,8 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class PosController extends Controller
+final class PosController extends Controller
 {
-    protected function getEffectiveLocale(Request $request): string
-    {
-        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
-        if (!in_array($locale, ['en', 'it'], true)) {
-            $locale = 'en';
-        }
-        App::setLocale($locale);
-        return $locale;
-    }
-
     /**
      * Display POS Register Screen (Inertia page).
      */
@@ -91,7 +81,7 @@ class PosController extends Controller
     {
         $validated = $request->validated();
 
-        if (!empty($validated['idempotency_key'])) {
+        if (! empty($validated['idempotency_key'])) {
             $existing = Order::with(['items', 'payments'])
                 ->where('idempotency_key', $validated['idempotency_key'])
                 ->first();
@@ -107,8 +97,8 @@ class PosController extends Controller
 
         $order = DB::transaction(function () use ($validated): Order {
             $order = Order::create([
-                'id' => $validated['id'] ?? ('ord-' . Str::uuid()->toString()),
-                'order_number' => $validated['order_number'] ?? ('AB-' . random_int(1000, 9999)),
+                'id' => $validated['id'] ?? ('ord-'.Str::uuid()->toString()),
+                'order_number' => $validated['order_number'] ?? ('AB-'.random_int(1000, 9999)),
                 'status' => Order::STATUS_PENDING,
                 'type' => $validated['type'],
                 'table_number' => $validated['table_number'] ?? null,
@@ -116,7 +106,7 @@ class PosController extends Controller
                 'customer_phone' => $validated['customer_phone'] ?? null,
                 'notes' => $validated['notes'] ?? null,
                 'idempotency_key' => $validated['idempotency_key'] ?? null,
-                'tracking_token' => 'OT-' . strtoupper(Str::random(6)),
+                'tracking_token' => 'OT-'.mb_strtoupper(Str::random(6)),
                 'subtotal' => $validated['subtotal'],
                 'tax_total' => $validated['tax_total'],
                 'total' => $validated['total'],
@@ -124,7 +114,7 @@ class PosController extends Controller
 
             foreach ($validated['items'] as $itemData) {
                 OrderItem::create([
-                    'id' => 'oi-' . Str::uuid()->toString(),
+                    'id' => 'oi-'.Str::uuid()->toString(),
                     'order_id' => $order->id,
                     'menu_item_id' => $itemData['menu_item_id'] ?? null,
                     'name' => $itemData['name'],
@@ -242,7 +232,7 @@ class PosController extends Controller
             $changeReturned = max(0.0, round($tendered - $amount, 2));
 
             $payment = Payment::create([
-                'id' => $validated['id'] ?? ('pay-' . Str::uuid()->toString()),
+                'id' => $validated['id'] ?? ('pay-'.Str::uuid()->toString()),
                 'order_id' => $order->id,
                 'amount' => $amount,
                 'tendered' => $tendered,
@@ -284,11 +274,11 @@ class PosController extends Controller
         $lines = [];
         $lines[] = $this->centerText($settings['name'] ?? 'THE ARTISAN BISTRO', $charWidth);
         $lines[] = $this->centerText($settings['address'] ?? '', $charWidth);
-        $lines[] = $this->centerText('TEL: ' . ($settings['phone'] ?? ''), $charWidth);
+        $lines[] = $this->centerText('TEL: '.($settings['phone'] ?? ''), $charWidth);
         $lines[] = str_repeat('-', $charWidth);
         $lines[] = $this->twoColumn("ORDER: #{$order->order_number}", date('m/d/Y H:i', strtotime((string) $order->created_at)), $charWidth);
-        $lines[] = $this->twoColumn("TYPE: " . strtoupper(str_replace('_', ' ', $order->type)), ($order->table_number ?? 'Counter'), $charWidth);
-        $lines[] = $this->twoColumn("GUEST: " . $order->customer_name, "TRACK: " . $order->tracking_token, $charWidth);
+        $lines[] = $this->twoColumn('TYPE: '.mb_strtoupper(str_replace('_', ' ', $order->type)), ($order->table_number ?? 'Counter'), $charWidth);
+        $lines[] = $this->twoColumn('GUEST: '.$order->customer_name, 'TRACK: '.$order->tracking_token, $charWidth);
         $lines[] = str_repeat('=', $charWidth);
         $lines[] = $this->twoColumn('ITEM', 'PRICE', $charWidth);
         $lines[] = str_repeat('-', $charWidth);
@@ -298,9 +288,9 @@ class PosController extends Controller
             $priceStr = sprintf('$%.2f', $item->total_price);
             $lines[] = $this->twoColumn($nameStr, $priceStr, $charWidth);
 
-            if (!empty($item->selected_modifiers) && is_array($item->selected_modifiers)) {
+            if (! empty($item->selected_modifiers) && is_array($item->selected_modifiers)) {
                 foreach ($item->selected_modifiers as $mod) {
-                    $modName = '  + ' . ($mod['option_name'] ?? '');
+                    $modName = '  + '.($mod['option_name'] ?? '');
                     $modPrice = (isset($mod['extra_price']) && (float) $mod['extra_price'] > 0)
                         ? sprintf('+$%.2f', (float) $mod['extra_price'])
                         : '';
@@ -331,11 +321,11 @@ class PosController extends Controller
         $lines[] = str_repeat('-', $charWidth);
         $lines[] = $this->centerText('GRAZIE MILLE!', $charWidth);
         $lines[] = $this->centerText('Thank you for dining with us!', $charWidth);
-        $lines[] = $this->centerText('Track online with token: ' . $order->tracking_token, $charWidth);
+        $lines[] = $this->centerText('Track online with token: '.$order->tracking_token, $charWidth);
         $lines[] = "\n\n";
 
         $rawText = implode("\n", $lines);
-        $escPosHex = '1b40' . bin2hex($rawText) . '0a0a1d564200';
+        $escPosHex = '1b40'.bin2hex($rawText).'0a0a1d564200';
 
         return response()->json([
             'success' => true,
@@ -347,24 +337,37 @@ class PosController extends Controller
         ]);
     }
 
+    protected function getEffectiveLocale(Request $request): string
+    {
+        $locale = $request->get('locale') ?? Session::get('locale') ?? config('app.locale', 'en');
+        if (! in_array($locale, ['en', 'it'], true)) {
+            $locale = 'en';
+        }
+        App::setLocale($locale);
+
+        return $locale;
+    }
+
     protected function centerText(string $text, int $width): string
     {
-        $len = strlen($text);
+        $len = mb_strlen($text);
         if ($len >= $width) {
-            return substr($text, 0, $width);
+            return mb_substr($text, 0, $width);
         }
         $left = (int) floor(($width - $len) / 2);
-        return str_repeat(' ', $left) . $text;
+
+        return str_repeat(' ', $left).$text;
     }
 
     protected function twoColumn(string $left, string $right, int $width): string
     {
-        $rightLen = strlen($right);
+        $rightLen = mb_strlen($right);
         $leftMax = $width - $rightLen - 1;
-        if (strlen($left) > $leftMax) {
-            $left = substr($left, 0, $leftMax);
+        if (mb_strlen($left) > $leftMax) {
+            $left = mb_substr($left, 0, $leftMax);
         }
-        $spaceNeeded = max(1, $width - strlen($left) - $rightLen);
-        return $left . str_repeat(' ', $spaceNeeded) . $right;
+        $spaceNeeded = max(1, $width - mb_strlen($left) - $rightLen);
+
+        return $left.str_repeat(' ', $spaceNeeded).$right;
     }
 }

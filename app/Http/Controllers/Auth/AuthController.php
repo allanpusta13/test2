@@ -13,49 +13,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
-use Inertia\Response;
+use Inertia\Response as InertiaResponse;
 
-class AuthController extends Controller
+final class AuthController extends Controller
 {
     /**
-     * Show the login screen / metadata.
+     * Show the login screen.
      */
-    public function showLoginForm(): JsonResponse
+    public function showLoginForm(): InertiaResponse
     {
-        return response()->json([
-            'success' => true,
-            'authenticated' => Auth::check(),
-            'user' => Auth::user(),
-            'demo_accounts' => [
-                [
-                    'email' => 'elena@artisanbistro.com',
-                    'password' => 'password123',
-                    'name' => 'Elena Rostova',
-                    'role' => User::ROLE_ADMIN,
-                    'role_label' => 'Store Administrator',
-                    'badge' => 'Full Access (Admin, Menu, Stock, POS, KDS)',
-                    'avatar' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
-                ],
-                [
-                    'email' => 'sophia@artisanbistro.com',
-                    'password' => 'password123',
-                    'name' => 'Sophia Rossi',
-                    'role' => User::ROLE_CASHIER,
-                    'role_label' => 'Front Desk Cashier',
-                    'badge' => 'POS Terminal & Cash Collection',
-                    'avatar' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
-                ],
-                [
-                    'email' => 'luigi@artisanbistro.com',
-                    'password' => 'password123',
-                    'name' => 'Luigi Vanni',
-                    'role' => User::ROLE_KITCHEN_STAFF,
-                    'role_label' => 'Line Cook / Kitchen Staff',
-                    'badge' => 'Kitchen Display (KDS) & Order Bumping',
-                    'avatar' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
-                ],
-            ],
-        ]);
+        $locale = app()->getLocale();
+        $payload = RestaurantDataService::getSharedPayload($locale);
+
+        return Inertia::render('Login', $payload);
     }
 
     /**
@@ -77,7 +47,7 @@ class AuthController extends Controller
             $mockUsers = RestaurantDataService::getUsers();
             $matchedMock = null;
             foreach ($mockUsers as $mu) {
-                if (strtolower($mu['email']) === strtolower($validated['email']) && in_array($validated['password'], ['password123', 'password', 'admin123', 'secret'], true)) {
+                if (mb_strtolower($mu['email']) === mb_strtolower($validated['email']) && in_array($validated['password'], ['password123', 'password', 'admin123', 'secret'], true)) {
                     $matchedMock = $mu;
                     break;
                 }
@@ -89,7 +59,12 @@ class AuthController extends Controller
                     [
                         'id' => $matchedMock['id'],
                         'name' => $matchedMock['name'],
-                        'role' => $matchedMock['role'],
+                        'role_id' => match ($matchedMock['role']) {
+                            'admin' => 'role-admin',
+                            'cashier' => 'role-cashier',
+                            'kitchen_staff' => 'role-kitchen-staff',
+                            default => 'role-cashier',
+                        },
                         'avatar' => $matchedMock['avatar'] ?? null,
                         'password' => Hash::make($validated['password']),
                     ]
@@ -125,7 +100,9 @@ class AuthController extends Controller
         if ($email) {
             $query->where('email', $email);
         } else {
-            $query->where('role', $role);
+            $query->whereHas('role', function ($q) use ($role) {
+                $q->where('name', $role);
+            });
         }
 
         $user = $query->first();
@@ -140,7 +117,12 @@ class AuthController extends Controller
                 [
                     'id' => $seed['id'],
                     'name' => $seed['name'],
-                    'role' => $seed['role'],
+                    'role_id' => match ($seed['role']) {
+                        'admin' => 'role-admin',
+                        'cashier' => 'role-cashier',
+                        'kitchen_staff' => 'role-kitchen-staff',
+                        default => 'role-cashier',
+                    },
                     'avatar' => $seed['avatar'] ?? null,
                     'password' => Hash::make('password123'),
                 ]
