@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 
 interface LoginFormProps {
-  onSuccess?: () => void;
+  onSuccess?: (user?: { role?: string }) => void;
   redirectTab?: string;
 }
 
@@ -40,7 +40,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
       if (result.success) {
         setSuccessMessage(`Authenticated as ${result.user.name} (${result.user.role})`);
         setTimeout(() => {
-          if (onSuccess) onSuccess();
+          if (onSuccess) onSuccess(result.user);
         }, 400);
       } else {
         setErrorMessage(result.message || 'Invalid email or password');
