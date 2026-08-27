@@ -27,6 +27,20 @@ return new class extends Migration
                 ->update(['role_id' => $roleId]);
         }
 
+        // Abort if any users have unmapped roles — these must be resolved manually
+        $unmappedUsers = DB::table('users')
+            ->whereNull('role_id')
+            ->pluck('id');
+
+        if ($unmappedUsers->isNotEmpty()) {
+            abort(
+                500,
+                'Migration aborted: '.$unmappedUsers->count().' user(s) have unmapped roles and no role_id assigned. '
+                .'User IDs: '.$unmappedUsers->implode(', ').'. '
+                .'Resolve manually before migrating.'
+            );
+        }
+
         Schema::table('users', function (Blueprint $table): void {
             $table->dropColumn('role');
         });
