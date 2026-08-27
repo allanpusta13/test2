@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRestaurant } from '../../Context/RestaurantContext';
 import { laravelApi, formatLaravelErrors } from '../../lib/api';
+import Echo from '../lib/echo';
 import { 
   Search, 
   ReceiptText, 
@@ -66,6 +67,19 @@ export const PublicOrderTracker: React.FC = () => {
   useEffect(() => {
     if (activeTrackingToken && !trackedOrder) {
       handleSearch({ preventDefault: () => {} } as React.FormEvent);
+    }
+  }, [activeTrackingToken]);
+
+  // Real-time updates via Echo private channel
+  useEffect(() => {
+    if (activeTrackingToken) {
+      const channel = Echo.private(`order.${activeTrackingToken}`);
+      channel.listen('OrderStatusUpdated', (order) => {
+        setTrackedOrder(order);
+      });
+      return () => {
+        window.Echo.leaveChannel(channel);
+      };
     }
   }, [activeTrackingToken]);
 
