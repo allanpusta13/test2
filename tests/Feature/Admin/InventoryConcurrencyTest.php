@@ -27,11 +27,8 @@ test('concurrent inventory deductions use database atomicity', function () {
         'name' => 'All-Purpose Flour',
         'category' => 'Dry Goods',
         'unit' => 'kg',
-        'unit_cost' => 0.80,
-        'current_stock' => 10.0,
-        'par_level' => 50.0,
-        'supplier' => 'Sysco',
-        'reorder_point' => 20.0,
+        'cost_per_unit' => 0.80,
+        'low_stock_threshold' => 5.0,
     ]);
 
     InventoryTransaction::create([
@@ -87,11 +84,8 @@ test('stock deduction validation prevents overselling', function () {
         'name' => 'Whole Milk',
         'category' => 'Dairy',
         'unit' => 'liters',
-        'unit_cost' => 1.20,
-        'current_stock' => 5.0,
-        'par_level' => 20.0,
-        'supplier' => 'Local Farm',
-        'reorder_point' => 10.0,
+        'cost_per_unit' => 1.20,
+        'low_stock_threshold' => 5.0,
     ]);
 
     InventoryTransaction::create([

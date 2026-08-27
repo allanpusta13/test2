@@ -52,7 +52,6 @@ Route::controller(TrackerController::class)->name('tracker.')->group(function ()
     Route::get('/tracker/{token?}', 'index')->name('index');
     Route::get('/tracker/order/{token}', 'track')->name('lookup');
 });
-Route::get('/tracker/{token?}', [TrackerController::class, 'index'])->name('tracker');
 
 // Localization & Language Switching (LocaleController)
 Route::controller(LocaleController::class)->group(function () {
