@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\OrderStatusUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\UpdateOrderStatusRequest;
 use App\Models\InventoryItem;
@@ -117,6 +118,8 @@ final class KitchenController extends Controller
             $order->save();
         });
 
+        broadcast(new OrderStatusUpdated($order->fresh()))->toOthers();
+
         return response()->json([
             'success' => true,
             'message' => "Kitchen ticket status updated to {$newStatus}",
@@ -131,6 +134,8 @@ final class KitchenController extends Controller
     {
         $order = Order::findOrFail($id);
         $order->update(['status' => Order::STATUS_COMPLETED]);
+
+        broadcast(new OrderStatusUpdated($order->fresh()))->toOthers();
 
         return response()->json([
             'success' => true,
@@ -177,6 +182,8 @@ final class KitchenController extends Controller
             }
             $order->save();
         });
+
+        broadcast(new OrderStatusUpdated($order->fresh()))->toOthers();
 
         return response()->json([
             'success' => true,

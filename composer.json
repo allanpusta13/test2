@@ -101,7 +101,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [],
+            "dont-discover": [
+                "Illuminate\\Broadcasting\\BroadcastServiceProvider"
+            ],
             "installer": {
                 "post-create-project": []
             }

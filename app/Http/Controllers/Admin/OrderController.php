@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\OrderStatusUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Requests\Order\UpdateOrderStatusRequest;
@@ -225,6 +226,8 @@ final class OrderController extends Controller
             }
             $order->save();
         });
+
+        broadcast(new OrderStatusUpdated($order->fresh()))->toOthers();
 
         return response()->json([
             'success' => true,
