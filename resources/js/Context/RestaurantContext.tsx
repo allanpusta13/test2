@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { usePage, router } from '@inertiajs/react';
 import { 
   RestaurantSettings, 
@@ -18,22 +18,33 @@ import {
   AppSurface, 
   AdminView, 
   RoleType,
+  SidebarNavGroup,
   PageProps,
   TranslationMap,
   AppRoutes
 } from '../types';
-import { 
-  RESTAURANT_SETTINGS, 
-  INITIAL_USERS, 
-  FIXED_ROLE_PERMISSIONS, 
-  INITIAL_CATEGORIES, 
-  INITIAL_INVENTORY_ITEMS, 
-  INITIAL_TRANSACTIONS, 
-  INITIAL_MENU_ITEMS, 
-  INITIAL_ORDERS 
-} from '../data/mockData';
 import { translate } from '../lib/i18n';
 import { laravelApi, API_BASE_URL } from '../lib/api';
+import {
+  queueOfflineOrder,
+  getQueuedOrders,
+  markOrderSynced,
+  markOrderFailed,
+  clearSyncedOrders,
+} from '../lib/offline-storage';
+
+const DEFAULT_RESTAURANT_SETTINGS: RestaurantSettings = {
+  name: 'The Artisan Wood-Fired Bistro',
+  tagline: 'Authentic Handcrafted Pizzas, Slow-Simmered Pastas & Italian Classics',
+  address: '452 Via Roma, Little Italy, NY 10013',
+  phone: '+1 (555) 234-8901',
+  currency: '$',
+  tax_rate: 0.08875,
+  hours: 'Daily: 11:30 AM – 10:30 PM',
+  cash_policy_notice: 'Pay at Counter: Customers pay in person at the cashier counter. Only authorized cashiers can accept and record payments into the register.',
+  receipt_header: "THE ARTISAN BISTRO\n452 Via Roma, Little Italy, NY\nTel: +1 (555) 234-8901",
+  receipt_footer: "GRAZIE MILLE!\nThank you for dining with us.\nPlease retain this ticket for order collection.",
+};
 
 interface CartItem extends OrderItem {
   cart_id: string;
@@ -57,6 +68,7 @@ interface RestaurantContextType {
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
   rolesPermissions: RolePermission[];
   hasPermission: (permCode: string) => boolean;
+  sidebarNav: SidebarNavGroup[];
 
   // Authentication & Staff Access Modal
   isAuthModalOpen: boolean;
@@ -150,17 +162,20 @@ interface RestaurantContextType {
 
 const RestaurantContext = createContext<RestaurantContextType | undefined>(undefined);
 
-export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Read props passed from Laravel Inertia
-  let inertiaProps: PageProps = {};
+export const RestaurantProvider: React.FC<{ children: React.ReactNode; initialPageProps?: PageProps }> = ({ children, initialPageProps }) => {
+  // Read props passed from Laravel Inertia.
+  // `initialPageProps` is provided by app.tsx from the setup() callback so we have
+  // correct data on the very first render (usePage() is not available yet
+  // because this provider wraps the Inertia <App> which provides the page context).
+  // After mount, usePage() handles navigation updates via the global Inertia store.
+  let inertiaProps: PageProps = initialPageProps || {};
   try {
     const page = usePage<PageProps>();
-    if (page && page.props) {
+    if (page?.props && Object.keys(page.props).length > 0) {
       inertiaProps = page.props;
     }
-  } catch (e) {
-    // Graceful fallback for non-Inertia render contexts
-    inertiaProps = {};
+  } catch {
+    // Non-Inertia render context (e.g. SSR) — keep initialPageProps
   }
 
   // Locale & Translations from Laravel
@@ -173,13 +188,11 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   // Settings & Auth
   const [settings, setSettings] = useState<RestaurantSettings>(
-    inertiaProps.settings || RESTAURANT_SETTINGS
+    inertiaProps.settings || DEFAULT_RESTAURANT_SETTINGS
   );
   
   // Default staff user from Inertia or stored session (default null = guest)
-  const initialUserList = inertiaProps.users && inertiaProps.users.length > 0 
-    ? inertiaProps.users 
-    : INITIAL_USERS;
+  const initialUserList = inertiaProps.users || [];
     
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
     if (inertiaProps.auth?.user) return inertiaProps.auth.user;
@@ -195,26 +208,15 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authRedirectContext, setAuthRedirectContext] = useState<{ surface?: AppSurface; tab?: AdminView; reason?: string } | null>(null);
 
-  const rolesPermissions = inertiaProps.rolesPermissions && inertiaProps.rolesPermissions.length > 0 
-    ? inertiaProps.rolesPermissions 
-    : FIXED_ROLE_PERMISSIONS;
+  const rolesPermissions = inertiaProps.rolesPermissions || [];
+  const [sidebarNav, setSidebarNav] = useState<SidebarNavGroup[]>(inertiaProps.sidebarNav || []);
 
   // Menu, Categories & Inventory
-  const [categories, setCategories] = useState<Category[]>(
-    inertiaProps.categories && inertiaProps.categories.length > 0 ? inertiaProps.categories : INITIAL_CATEGORIES
-  );
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(
-    inertiaProps.menuItems && inertiaProps.menuItems.length > 0 ? inertiaProps.menuItems : INITIAL_MENU_ITEMS
-  );
-  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(
-    inertiaProps.inventory && inertiaProps.inventory.length > 0 ? inertiaProps.inventory : INITIAL_INVENTORY_ITEMS
-  );
-  const [inventoryTransactions, setInventoryTransactions] = useState<InventoryTransaction[]>(
-    inertiaProps.transactions && inertiaProps.transactions.length > 0 ? inertiaProps.transactions : INITIAL_TRANSACTIONS
-  );
-  const [orders, setOrders] = useState<Order[]>(
-    inertiaProps.orders && inertiaProps.orders.length > 0 ? inertiaProps.orders : INITIAL_ORDERS
-  );
+  const [categories, setCategories] = useState<Category[]>(inertiaProps.categories || []);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(inertiaProps.menuItems || []);
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(inertiaProps.inventory || []);
+  const [inventoryTransactions, setInventoryTransactions] = useState<InventoryTransaction[]>(inertiaProps.transactions || []);
+  const [orders, setOrders] = useState<Order[]>(inertiaProps.orders || []);
 
   // Update states whenever inertiaProps change (e.g., on page navigation or locale switch)
   useEffect(() => {
@@ -239,14 +241,38 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     if (inertiaProps.menuItems && inertiaProps.menuItems.length > 0) {
       setMenuItems(inertiaProps.menuItems);
     }
+    if (inertiaProps.sidebarNav) {
+      setSidebarNav(inertiaProps.sidebarNav);
+    }
   }, [inertiaProps]);
 
   // POS & Resilience
-  const [isOffline, setIsOffline] = useState(false);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [offlineQueue, setOfflineQueue] = useState<OfflineAction[]>([]);
   const [escPosJobs, setEscPosJobs] = useState<EscPosJob[]>([]);
   const [receiptModalOrder, setReceiptModalOrder] = useState<Order | null>(null);
   const [viewingOrder, setViewingOrder] = useState<Order | null>(null);
+
+  // Offline detection
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  // Auto-sync when coming back online
+  useEffect(() => {
+    if (!isOffline && offlineQueue.length > 0) {
+      syncOfflineQueue();
+    }
+  }, [isOffline]);
 
   // Surfaces & Navigation
   const [activeSurface, setActiveSurface] = useState<AppSurface>(
@@ -598,7 +624,7 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   // Create Order
-  const createOrder = (orderData: Partial<Order>): Order => {
+  const createOrder = async (orderData: Partial<Order>): Promise<Order> => {
     const newOrderNumber = `AB-${1000 + orders.length + 1}`;
     const token = `OT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
     const now = new Date().toISOString();
@@ -628,6 +654,7 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     };
 
     if (isOffline) {
+      await queueOfflineOrder(newOrder);
       const offlineAction: OfflineAction = {
         id: `offline-${Date.now()}`,
         idempotency_key: newOrder.idempotency_key,
@@ -813,13 +840,27 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   // Sync Offline POS Queue
-  const syncOfflineQueue = () => {
+  const syncOfflineQueue = useCallback(async () => {
     if (offlineQueue.length === 0) return;
-    setOfflineQueue(prev => prev.map(a => ({ ...a, status: 'synced' })));
-    setTimeout(() => {
-      setOfflineQueue([]);
-    }, 2000);
-  };
+
+    const queued = await getQueuedOrders();
+    if (queued.length === 0) return;
+
+    for (const item of queued) {
+      try {
+        await laravelApi.home.submitOrder({
+          ...item.order,
+          idempotency_key: item.idempotency_key,
+        });
+        await markOrderSynced(item.id);
+      } catch (err) {
+        await markOrderFailed(item.id, err instanceof Error ? err.message : 'Sync failed');
+      }
+    }
+
+    await clearSyncedOrders();
+    setOfflineQueue(prev => prev.filter(a => a.status !== 'synced'));
+  }, [offlineQueue]);
 
   // Cart Operations
   const addToCart = (orderItem: OrderItem) => {
@@ -894,6 +935,7 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setUsers,
         rolesPermissions,
         hasPermission,
+        sidebarNav,
         isAuthModalOpen,
         setIsAuthModalOpen,
         authRedirectContext,

@@ -1,50 +1,44 @@
-import React from 'react';
-import { RestaurantProvider, useRestaurant } from './Context/RestaurantContext';
-import { Navbar } from './Components/Navbar';
-import { PublicMenu } from './Components/public/PublicMenu';
-import { PublicOrderTracker } from './Components/public/PublicOrderTracker';
-import { AdminLayout } from './Components/admin/AdminLayout';
-import { CartDrawer } from './Components/public/CartDrawer';
-import { DishCustomizerDialog } from './Components/public/DishCustomizerDialog';
-import { CheckoutDialog } from './Components/public/CheckoutDialog';
-import { EscPosReceiptModal } from './Components/shared/EscPosReceiptModal';
-import { OrderDetailsDialog } from './Components/shared/OrderDetailsDialog';
-import { LaravelIntegrationDialog } from './Components/admin/LaravelIntegrationDialog';
-import { LoginDialog } from './Components/auth/LoginDialog';
+import '../css/app.css';
+import { createInertiaApp } from '@inertiajs/react';
+import { createRoot } from 'react-dom/client';
+import { TooltipProvider } from '@/Components/ui/tooltip';
+import { RestaurantProvider } from '@/Context/RestaurantContext';
 
-const AppContent: React.FC = () => {
-  const { activeSurface } = useRestaurant();
+const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-  return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 font-sans selection:bg-amber-500 selection:text-stone-950 antialiased flex flex-col">
-      {/* Top Navigation & Role Bar for Customer Views */}
-      {activeSurface !== 'admin' && <Navbar />}
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 
-      {/* Main Surface Routing */}
-      <main className="flex-1 flex flex-col min-h-0">
-        {activeSurface === 'public_menu' && <PublicMenu />}
-        {activeSurface === 'public_tracker' && <PublicOrderTracker />}
-        {activeSurface === 'admin' && <AdminLayout />}
-      </main>
+createInertiaApp({
+    title: (title) => (title ? `${title} - ${appName}` : appName),
+    resolve: (name) =>
+        resolvePageComponent(
+            `./pages/${name}.tsx`,
+            import.meta.glob('./pages/**/*.tsx')
+        ),
+    setup({ el, App, props }) {
+        const root = createRoot(el);
+        root.render(
+            <RestaurantProvider initialPageProps={props.initialPage?.props}>
+                <TooltipProvider>
+                    <App {...props} />
+                </TooltipProvider>
+            </RestaurantProvider>
+        );
+    },
+    progress: {
+        color: '#4B5563',
+    },
+});
 
-      {/* Global Interactive Drawers & Dialogs */}
-      <CartDrawer />
-      <DishCustomizerDialog />
-      <CheckoutDialog />
-      <EscPosReceiptModal />
-      <OrderDetailsDialog />
-      <LaravelIntegrationDialog />
-      <LoginDialog />
-    </div>
-  );
-};
-
-export function App() {
-  return (
-    <RestaurantProvider>
-      <AppContent />
-    </RestaurantProvider>
-  );
+// Register service worker for PWA support
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            })
+            .catch(error => {
+                console.log('ServiceWorker registration failed: ', error);
+            });
+    });
 }
-
-export default App;
