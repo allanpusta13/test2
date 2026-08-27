@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRestaurant } from '../../Context/RestaurantContext';
 import { laravelApi, formatLaravelErrors } from '../../lib/api';
-import Echo from '../lib/echo';
+import Echo from '../../lib/echo';
 import { 
   Search, 
   ReceiptText, 
