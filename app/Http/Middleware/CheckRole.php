@@ -18,7 +18,7 @@ final class CheckRole
             abort(401);
         }
 
-        $roleName = $user->role;
+        $roleName = $user->associatedRole?->name;
 
         if (! $roleName || ! in_array($roleName, $allowedRoles, true)) {
             abort(403, 'Unauthorized. Required role: '.implode(' or ', $allowedRoles));

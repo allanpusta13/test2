@@ -79,6 +79,13 @@ final class AuthController extends Controller
         Auth::login($user, $request->boolean('remember', true));
         $request->session()->regenerate();
 
+        if (! $user->role) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+
+            abort(403, 'User has no assigned role.');
+        }
+
         return response()->json([
             'success' => true,
             'message' => "Welcome back, {$user->name}!",
@@ -132,6 +139,13 @@ final class AuthController extends Controller
         Auth::login($user, true);
         $request->session()->regenerate();
 
+        if (! $user->role) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+
+            abort(403, 'User has no assigned role.');
+        }
+
         return response()->json([
             'success' => true,
             'message' => "Logged in as {$user->name} ({$user->role})",
@@ -182,7 +196,7 @@ final class AuthController extends Controller
     /**
      * Determine default landing view/surface based on role.
      */
-    protected function getDefaultSurfaceForRole(string $role): array
+    protected function getDefaultSurfaceForRole(?string $role): array
     {
         return match ($role) {
             User::ROLE_CASHIER => [

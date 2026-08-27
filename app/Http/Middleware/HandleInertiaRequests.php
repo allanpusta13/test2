@@ -69,7 +69,7 @@ final class HandleInertiaRequests extends Middleware
             'orders' => RestaurantDataService::getOrders(),
             'users' => RestaurantDataService::getUsers(),
             'rolesPermissions' => RestaurantDataService::getRolePermissions(),
-            'sidebarNav' => RestaurantDataService::getSidebarNav($request->user()?->role ?? 'admin'),
+            'sidebarNav' => RestaurantDataService::getSidebarNav($request->user()?->role ?? 'cashier'),
         ]);
     }
 }

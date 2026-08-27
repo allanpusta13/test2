@@ -69,9 +69,9 @@ final class User extends Authenticatable
     /**
      * Get the role name string — this is what the frontend expects as `role`.
      */
-    public function getRoleAttribute(): string
+    public function getRoleAttribute(): ?string
     {
-        return $this->associatedRole?->name ?? 'cashier';
+        return $this->associatedRole?->name;
     }
 
     /**
