@@ -44,9 +44,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
-import { CartDrawer } from '@/Components/public/CartDrawer';
-import { CheckoutDialog } from '@/Components/public/CheckoutDialog';
-import { DishCustomizerDialog } from '@/Components/public/DishCustomizerDialog';
+
 import { EscPosReceiptModal } from '@/Components/shared/EscPosReceiptModal';
 import { OrderDetailsDialog } from '@/Components/shared/OrderDetailsDialog';
 import { LaravelIntegrationDialog } from '@/Components/admin/LaravelIntegrationDialog';
@@ -60,12 +58,6 @@ interface AppLayoutProps {
 
 export default function AppLayout({ title = 'Artisan POS & Kitchen', children }: AppLayoutProps) {
   const {
-    isCartOpen,
-    setIsCartOpen,
-    isCheckoutOpen,
-    setIsCheckoutOpen,
-    selectedDishForCustomizer,
-    setSelectedDishForCustomizer,
     receiptModalOrder,
     setReceiptModalOrder,
     viewingOrder,
@@ -296,9 +288,6 @@ export default function AppLayout({ title = 'Artisan POS & Kitchen', children }:
               </Sidebar>
               <div className="flex-1 flex flex-col">
                 <main className="flex-1 pb-4">{children}</main>
-                <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-                <CheckoutDialog isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
-                <DishCustomizerDialog dish={selectedDishForCustomizer} onClose={() => setSelectedDishForCustomizer(null)} />
                 <EscPosReceiptModal order={receiptModalOrder} onClose={() => setReceiptModalOrder(null)} />
                 <OrderDetailsDialog order={viewingOrder} onClose={() => setViewingOrder(null)} />
                 <LaravelIntegrationDialog isOpen={isLaravelModalOpen} onClose={() => setIsLaravelModalOpen(false)} />
@@ -343,9 +332,6 @@ export default function AppLayout({ title = 'Artisan POS & Kitchen', children }:
             </button>
           </nav>
           <main className="flex-1">{children}</main>
-          <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-          <CheckoutDialog isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
-          <DishCustomizerDialog dish={selectedDishForCustomizer} onClose={() => setSelectedDishForCustomizer(null)} />
           <EscPosReceiptModal order={receiptModalOrder} onClose={() => setReceiptModalOrder(null)} />
           <OrderDetailsDialog order={viewingOrder} onClose={() => setViewingOrder(null)} />
           <LaravelIntegrationDialog isOpen={isLaravelModalOpen} onClose={() => setIsLaravelModalOpen(false)} />
