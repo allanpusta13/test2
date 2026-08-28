@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { usePage, router } from '@inertiajs/react';
 import { 
   RestaurantSettings, 
@@ -299,13 +299,40 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode; initialPa
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   
-  // Persist cart to localStorage on every change
+  // Persist cart to localStorage with debounced writes (300ms)
+  const cartPersistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasLoggedStorageError = useRef(false);
+
   useEffect(() => {
-    try {
-      localStorage.setItem('artisan-pos-cart', JSON.stringify(cart));
-    } catch (error) {
-      console.warn('Failed to save cart to localStorage:', error);
-    }
+    const flushPending = () => {
+      if (cartPersistTimerRef.current !== null) {
+        clearTimeout(cartPersistTimerRef.current);
+        cartPersistTimerRef.current = null;
+      }
+      try {
+        localStorage.setItem('artisan-pos-cart', JSON.stringify(cart));
+      } catch (error) {
+        if (!hasLoggedStorageError.current) {
+          console.warn('Failed to save cart to localStorage:', error);
+          hasLoggedStorageError.current = true;
+        }
+      }
+    };
+
+    cartPersistTimerRef.current = setTimeout(flushPending, 300);
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') flushPending();
+    };
+    const handleBeforeUnload = () => flushPending();
+    window.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      flushPending();
+    };
   }, [cart]);
   const [selectedDishForCustomizer, setSelectedDishForCustomizer] = useState<MenuItem | null>(null);
 
