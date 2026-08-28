@@ -291,7 +291,7 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode; initialPa
     if (typeof window === 'undefined') return [];
     try {
       const saved = localStorage.getItem('artisan-pos-cart');
-      return saved ? JSON.parse(saved) : [];
+      return saved ? parseCartFromStorage(saved) : [];
     } catch (error) {
       console.warn('Failed to load cart from localStorage:', error);
       return [];
@@ -1061,6 +1061,52 @@ export const useRestaurant = () => {
   }
   return context;
 };
+
+function parseCartFromStorage(raw: string): CartItem[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(parsed)) return [];
+
+  const valid: CartItem[] = [];
+  for (const item of parsed) {
+    if (
+      typeof item !== 'object' || item === null ||
+      typeof (item as any).id !== 'string' ||
+      typeof (item as any).cart_id !== 'string' ||
+      typeof (item as any).menu_item_id !== 'string' ||
+      typeof (item as any).name !== 'string'
+    ) continue;
+
+    const quantity = Number((item as any).quantity);
+    const unit_price = Number((item as any).unit_price);
+    const total_price = Number((item as any).total_price);
+
+    if (!Number.isFinite(quantity) || quantity < 1) continue;
+    if (!Number.isFinite(unit_price) || unit_price < 0) continue;
+    if (!Number.isFinite(total_price) || total_price < 0) continue;
+
+    const selected_modifiers = Array.isArray((item as any).selected_modifiers)
+      ? (item as any).selected_modifiers
+      : [];
+
+    valid.push({
+      id: (item as any).id,
+      cart_id: (item as any).cart_id,
+      menu_item_id: (item as any).menu_item_id,
+      name: (item as any).name,
+      quantity,
+      unit_price,
+      total_price,
+      notes: (item as any).notes,
+      selected_modifiers,
+    });
+  }
+  return valid;
+}
 
 // Helper for hex representation
 function BufferHex(str: string) {
