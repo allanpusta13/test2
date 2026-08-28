@@ -963,6 +963,15 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode; initialPa
   };
 
   const clearCart = () => {
+    if (typeof window !== 'undefined') {
+      if (cartPersistTimerRef.current !== null) {
+        clearTimeout(cartPersistTimerRef.current);
+        cartPersistTimerRef.current = null;
+      }
+      try {
+        localStorage.removeItem('artisan-pos-cart');
+      } catch {}
+    }
     setCart([]);
   };
 
