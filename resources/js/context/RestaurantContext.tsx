@@ -196,6 +196,7 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode; initialPa
     
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
     if (inertiaProps.auth?.user) return inertiaProps.auth.user;
+    if (typeof window === 'undefined') return null;
     try {
       const stored = localStorage.getItem('laravel_auth_user');
       if (stored) return JSON.parse(stored);
@@ -287,7 +288,7 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode; initialPa
 
   // Cart
   const [cart, setCart] = useState<CartItem[]>(() => {
-    // Load cart from localStorage on initial render
+    if (typeof window === 'undefined') return [];
     try {
       const saved = localStorage.getItem('artisan-pos-cart');
       return saved ? JSON.parse(saved) : [];
