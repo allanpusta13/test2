@@ -303,9 +303,11 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode; initialPa
   // Persist cart to localStorage with debounced writes (300ms)
   const cartPersistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasLoggedStorageError = useRef(false);
+  const cartRef = useRef<CartItem[]>([]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    cartRef.current = cart;
 
     const flushPending = () => {
       if (cartPersistTimerRef.current !== null) {
@@ -313,7 +315,7 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode; initialPa
         cartPersistTimerRef.current = null;
       }
       try {
-        localStorage.setItem('artisan-pos-cart', JSON.stringify(cart));
+        localStorage.setItem('artisan-pos-cart', JSON.stringify(cartRef.current));
       } catch (error) {
         if (!hasLoggedStorageError.current) {
           console.warn('Failed to save cart to localStorage:', error);
