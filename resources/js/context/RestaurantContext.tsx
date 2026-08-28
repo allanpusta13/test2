@@ -305,6 +305,8 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode; initialPa
   const hasLoggedStorageError = useRef(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const flushPending = () => {
       if (cartPersistTimerRef.current !== null) {
         clearTimeout(cartPersistTimerRef.current);
