@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
 export const user = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ user.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
 user.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ user.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
 user.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ user.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
 user.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ user.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
     const userForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ user.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
         userForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ user.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
         userForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ user.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     user.form = userForm
 /**
 * @see \App\Http\Controllers\Auth\AuthController::quickLogin
- * @see app/Http/Controllers/Auth/AuthController.php:94
+ * @see app/Http/Controllers/Auth/AuthController.php:101
  * @route '/auth/quick-login'
  */
 export const quickLogin = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +94,7 @@ quickLogin.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::quickLogin
- * @see app/Http/Controllers/Auth/AuthController.php:94
+ * @see app/Http/Controllers/Auth/AuthController.php:101
  * @route '/auth/quick-login'
  */
 quickLogin.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ quickLogin.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::quickLogin
- * @see app/Http/Controllers/Auth/AuthController.php:94
+ * @see app/Http/Controllers/Auth/AuthController.php:101
  * @route '/auth/quick-login'
  */
 quickLogin.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -113,7 +113,7 @@ quickLogin.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Auth\AuthController::quickLogin
- * @see app/Http/Controllers/Auth/AuthController.php:94
+ * @see app/Http/Controllers/Auth/AuthController.php:101
  * @route '/auth/quick-login'
  */
     const quickLoginForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -123,7 +123,7 @@ quickLogin.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Auth\AuthController::quickLogin
- * @see app/Http/Controllers/Auth/AuthController.php:94
+ * @see app/Http/Controllers/Auth/AuthController.php:101
  * @route '/auth/quick-login'
  */
         quickLoginForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

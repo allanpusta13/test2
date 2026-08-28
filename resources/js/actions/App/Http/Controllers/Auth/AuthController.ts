@@ -223,7 +223,7 @@ login.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     login.form = loginForm
 /**
 * @see \App\Http\Controllers\Auth\AuthController::logout
- * @see app/Http/Controllers/Auth/AuthController.php:169
+ * @see app/Http/Controllers/Auth/AuthController.php:183
  * @route '/logout'
  */
 export const logout = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -238,7 +238,7 @@ logout.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::logout
- * @see app/Http/Controllers/Auth/AuthController.php:169
+ * @see app/Http/Controllers/Auth/AuthController.php:183
  * @route '/logout'
  */
 logout.url = (options?: RouteQueryOptions) => {
@@ -247,7 +247,7 @@ logout.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::logout
- * @see app/Http/Controllers/Auth/AuthController.php:169
+ * @see app/Http/Controllers/Auth/AuthController.php:183
  * @route '/logout'
  */
 logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -257,7 +257,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Auth\AuthController::logout
- * @see app/Http/Controllers/Auth/AuthController.php:169
+ * @see app/Http/Controllers/Auth/AuthController.php:183
  * @route '/logout'
  */
     const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -267,7 +267,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Auth\AuthController::logout
- * @see app/Http/Controllers/Auth/AuthController.php:169
+ * @see app/Http/Controllers/Auth/AuthController.php:183
  * @route '/logout'
  */
         logoutForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -278,7 +278,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     logout.form = logoutForm
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
 const userfdd54c908f1713e31b39162fcc9faf0f = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -293,7 +293,7 @@ userfdd54c908f1713e31b39162fcc9faf0f.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
 userfdd54c908f1713e31b39162fcc9faf0f.url = (options?: RouteQueryOptions) => {
@@ -302,7 +302,7 @@ userfdd54c908f1713e31b39162fcc9faf0f.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
 userfdd54c908f1713e31b39162fcc9faf0f.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -311,7 +311,7 @@ userfdd54c908f1713e31b39162fcc9faf0f.get = (options?: RouteQueryOptions): RouteD
 })
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
 userfdd54c908f1713e31b39162fcc9faf0f.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -321,7 +321,7 @@ userfdd54c908f1713e31b39162fcc9faf0f.head = (options?: RouteQueryOptions): Route
 
     /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
     const userfdd54c908f1713e31b39162fcc9faf0fForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -331,7 +331,7 @@ userfdd54c908f1713e31b39162fcc9faf0f.head = (options?: RouteQueryOptions): Route
 
             /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
         userfdd54c908f1713e31b39162fcc9faf0fForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -340,7 +340,7 @@ userfdd54c908f1713e31b39162fcc9faf0f.head = (options?: RouteQueryOptions): Route
         })
             /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/auth/user'
  */
         userfdd54c908f1713e31b39162fcc9faf0fForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -356,7 +356,7 @@ userfdd54c908f1713e31b39162fcc9faf0f.head = (options?: RouteQueryOptions): Route
     userfdd54c908f1713e31b39162fcc9faf0f.form = userfdd54c908f1713e31b39162fcc9faf0fForm
     /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
 const userfae88ad6309fcfbde7a7c79f2701ed35 = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -371,7 +371,7 @@ userfae88ad6309fcfbde7a7c79f2701ed35.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
 userfae88ad6309fcfbde7a7c79f2701ed35.url = (options?: RouteQueryOptions) => {
@@ -380,7 +380,7 @@ userfae88ad6309fcfbde7a7c79f2701ed35.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
 userfae88ad6309fcfbde7a7c79f2701ed35.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -389,7 +389,7 @@ userfae88ad6309fcfbde7a7c79f2701ed35.get = (options?: RouteQueryOptions): RouteD
 })
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
 userfae88ad6309fcfbde7a7c79f2701ed35.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -399,7 +399,7 @@ userfae88ad6309fcfbde7a7c79f2701ed35.head = (options?: RouteQueryOptions): Route
 
     /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
     const userfae88ad6309fcfbde7a7c79f2701ed35Form = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -409,7 +409,7 @@ userfae88ad6309fcfbde7a7c79f2701ed35.head = (options?: RouteQueryOptions): Route
 
             /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
         userfae88ad6309fcfbde7a7c79f2701ed35Form.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -418,7 +418,7 @@ userfae88ad6309fcfbde7a7c79f2701ed35.head = (options?: RouteQueryOptions): Route
         })
             /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
         userfae88ad6309fcfbde7a7c79f2701ed35Form.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -445,7 +445,7 @@ export const user = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::quickLogin
- * @see app/Http/Controllers/Auth/AuthController.php:94
+ * @see app/Http/Controllers/Auth/AuthController.php:101
  * @route '/auth/quick-login'
  */
 export const quickLogin = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -460,7 +460,7 @@ quickLogin.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::quickLogin
- * @see app/Http/Controllers/Auth/AuthController.php:94
+ * @see app/Http/Controllers/Auth/AuthController.php:101
  * @route '/auth/quick-login'
  */
 quickLogin.url = (options?: RouteQueryOptions) => {
@@ -469,7 +469,7 @@ quickLogin.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::quickLogin
- * @see app/Http/Controllers/Auth/AuthController.php:94
+ * @see app/Http/Controllers/Auth/AuthController.php:101
  * @route '/auth/quick-login'
  */
 quickLogin.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -479,7 +479,7 @@ quickLogin.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Auth\AuthController::quickLogin
- * @see app/Http/Controllers/Auth/AuthController.php:94
+ * @see app/Http/Controllers/Auth/AuthController.php:101
  * @route '/auth/quick-login'
  */
     const quickLoginForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -489,7 +489,7 @@ quickLogin.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Auth\AuthController::quickLogin
- * @see app/Http/Controllers/Auth/AuthController.php:94
+ * @see app/Http/Controllers/Auth/AuthController.php:101
  * @route '/auth/quick-login'
  */
         quickLoginForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

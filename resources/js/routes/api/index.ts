@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
 export const user = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ user.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
 user.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ user.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
 user.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ user.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
 user.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ user.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
     const userForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ user.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
         userForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ user.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Auth\AuthController::user
- * @see app/Http/Controllers/Auth/AuthController.php:147
+ * @see app/Http/Controllers/Auth/AuthController.php:161
  * @route '/api/user'
  */
         userForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

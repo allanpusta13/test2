@@ -286,9 +286,27 @@ export const RestaurantProvider: React.FC<{ children: React.ReactNode; initialPa
   );
 
   // Cart
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    // Load cart from localStorage on initial render
+    try {
+      const saved = localStorage.getItem('artisan-pos-cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch (error) {
+      console.warn('Failed to load cart from localStorage:', error);
+      return [];
+    }
+  });
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  
+  // Persist cart to localStorage on every change
+  useEffect(() => {
+    try {
+      localStorage.setItem('artisan-pos-cart', JSON.stringify(cart));
+    } catch (error) {
+      console.warn('Failed to save cart to localStorage:', error);
+    }
+  }, [cart]);
   const [selectedDishForCustomizer, setSelectedDishForCustomizer] = useState<MenuItem | null>(null);
 
   // Laravel Backend API Integration State

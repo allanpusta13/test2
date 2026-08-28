@@ -79,7 +79,7 @@ login.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     login.form = loginForm
 /**
 * @see \App\Http\Controllers\Auth\AuthController::logout
- * @see app/Http/Controllers/Auth/AuthController.php:169
+ * @see app/Http/Controllers/Auth/AuthController.php:183
  * @route '/logout'
  */
 export const logout = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +94,7 @@ logout.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::logout
- * @see app/Http/Controllers/Auth/AuthController.php:169
+ * @see app/Http/Controllers/Auth/AuthController.php:183
  * @route '/logout'
  */
 logout.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ logout.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthController::logout
- * @see app/Http/Controllers/Auth/AuthController.php:169
+ * @see app/Http/Controllers/Auth/AuthController.php:183
  * @route '/logout'
  */
 logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -113,7 +113,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Auth\AuthController::logout
- * @see app/Http/Controllers/Auth/AuthController.php:169
+ * @see app/Http/Controllers/Auth/AuthController.php:183
  * @route '/logout'
  */
     const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -123,7 +123,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Auth\AuthController::logout
- * @see app/Http/Controllers/Auth/AuthController.php:169
+ * @see app/Http/Controllers/Auth/AuthController.php:183
  * @route '/logout'
  */
         logoutForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -289,107 +289,6 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     home.form = homeForm
 /**
-* @see \App\Http\Controllers\TrackerController::tracker
- * @see app/Http/Controllers/TrackerController.php:18
- * @route '/tracker/{token?}'
- */
-export const tracker = (args?: { token?: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: tracker.url(args, options),
-    method: 'get',
-})
-
-tracker.definition = {
-    methods: ["get","head"],
-    url: '/tracker/{token?}',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \App\Http\Controllers\TrackerController::tracker
- * @see app/Http/Controllers/TrackerController.php:18
- * @route '/tracker/{token?}'
- */
-tracker.url = (args?: { token?: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions) => {
-    if (typeof args === 'string' || typeof args === 'number') {
-        args = { token: args }
-    }
-
-    
-    if (Array.isArray(args)) {
-        args = {
-                    token: args[0],
-                }
-    }
-
-    args = applyUrlDefaults(args)
-
-    validateParameters(args, [
-            "token",
-        ])
-
-    const parsedArgs = {
-                        token: args?.token,
-                }
-
-    return tracker.definition.url
-            .replace('{token?}', parsedArgs.token?.toString() ?? '')
-            .replace(/\/+$/, '') + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\TrackerController::tracker
- * @see app/Http/Controllers/TrackerController.php:18
- * @route '/tracker/{token?}'
- */
-tracker.get = (args?: { token?: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: tracker.url(args, options),
-    method: 'get',
-})
-/**
-* @see \App\Http\Controllers\TrackerController::tracker
- * @see app/Http/Controllers/TrackerController.php:18
- * @route '/tracker/{token?}'
- */
-tracker.head = (args?: { token?: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: tracker.url(args, options),
-    method: 'head',
-})
-
-    /**
-* @see \App\Http\Controllers\TrackerController::tracker
- * @see app/Http/Controllers/TrackerController.php:18
- * @route '/tracker/{token?}'
- */
-    const trackerForm = (args?: { token?: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: tracker.url(args, options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\TrackerController::tracker
- * @see app/Http/Controllers/TrackerController.php:18
- * @route '/tracker/{token?}'
- */
-        trackerForm.get = (args?: { token?: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: tracker.url(args, options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\TrackerController::tracker
- * @see app/Http/Controllers/TrackerController.php:18
- * @route '/tracker/{token?}'
- */
-        trackerForm.head = (args?: { token?: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: tracker.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    tracker.form = trackerForm
-/**
 * @see \App\Http\Controllers\LocaleController::translations
  * @see app/Http/Controllers/LocaleController.php:34
  * @route '/translations/{locale?}'
@@ -492,7 +391,7 @@ translations.head = (args?: { locale?: string | number } | [locale: string | num
     translations.form = translationsForm
 /**
 * @see \App\Http\Controllers\Admin\OrderController::orders
- * @see app/Http/Controllers/Admin/OrderController.php:30
+ * @see app/Http/Controllers/Admin/OrderController.php:31
  * @route '/orders'
  */
 export const orders = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -507,7 +406,7 @@ orders.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\OrderController::orders
- * @see app/Http/Controllers/Admin/OrderController.php:30
+ * @see app/Http/Controllers/Admin/OrderController.php:31
  * @route '/orders'
  */
 orders.url = (options?: RouteQueryOptions) => {
@@ -516,7 +415,7 @@ orders.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\OrderController::orders
- * @see app/Http/Controllers/Admin/OrderController.php:30
+ * @see app/Http/Controllers/Admin/OrderController.php:31
  * @route '/orders'
  */
 orders.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -525,7 +424,7 @@ orders.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Admin\OrderController::orders
- * @see app/Http/Controllers/Admin/OrderController.php:30
+ * @see app/Http/Controllers/Admin/OrderController.php:31
  * @route '/orders'
  */
 orders.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -535,7 +434,7 @@ orders.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\OrderController::orders
- * @see app/Http/Controllers/Admin/OrderController.php:30
+ * @see app/Http/Controllers/Admin/OrderController.php:31
  * @route '/orders'
  */
     const ordersForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -545,7 +444,7 @@ orders.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\OrderController::orders
- * @see app/Http/Controllers/Admin/OrderController.php:30
+ * @see app/Http/Controllers/Admin/OrderController.php:31
  * @route '/orders'
  */
         ordersForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -554,7 +453,7 @@ orders.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Admin\OrderController::orders
- * @see app/Http/Controllers/Admin/OrderController.php:30
+ * @see app/Http/Controllers/Admin/OrderController.php:31
  * @route '/orders'
  */
         ordersForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -881,7 +780,7 @@ users.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     users.form = usersForm
 /**
- * @see routes/web.php:156
+ * @see routes/web.php:155
  * @route '/roles'
  */
 export const roles = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -895,7 +794,7 @@ roles.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:156
+ * @see routes/web.php:155
  * @route '/roles'
  */
 roles.url = (options?: RouteQueryOptions) => {
@@ -903,7 +802,7 @@ roles.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/web.php:156
+ * @see routes/web.php:155
  * @route '/roles'
  */
 roles.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -911,7 +810,7 @@ roles.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/web.php:156
+ * @see routes/web.php:155
  * @route '/roles'
  */
 roles.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -920,7 +819,7 @@ roles.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/web.php:156
+ * @see routes/web.php:155
  * @route '/roles'
  */
     const rolesForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -929,7 +828,7 @@ roles.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:156
+ * @see routes/web.php:155
  * @route '/roles'
  */
         rolesForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -937,7 +836,7 @@ roles.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/web.php:156
+ * @see routes/web.php:155
  * @route '/roles'
  */
         rolesForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -953,7 +852,7 @@ roles.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     roles.form = rolesForm
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::kitchen
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
 export const kitchen = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -968,7 +867,7 @@ kitchen.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::kitchen
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
 kitchen.url = (options?: RouteQueryOptions) => {
@@ -977,7 +876,7 @@ kitchen.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::kitchen
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
 kitchen.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -986,7 +885,7 @@ kitchen.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::kitchen
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
 kitchen.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -996,7 +895,7 @@ kitchen.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\KitchenController::kitchen
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
     const kitchenForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -1006,7 +905,7 @@ kitchen.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::kitchen
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
         kitchenForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -1015,7 +914,7 @@ kitchen.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::kitchen
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
         kitchenForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

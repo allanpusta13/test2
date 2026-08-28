@@ -94,6 +94,11 @@ Run the full test suite for the project. This includes:
 - `php artisan test` — full backend suite.
 - frontend test command (e.g., `npm run test` for Angular/React, or `php artisan test` if using Pest for Livewire tests) — run if the task touched frontend code.
 
+
+**Schema Alignment Check (for database-related tasks):** When writing tests, factories, or seeders that interact with database models, verify that all column names and types match the current migration schema. Check the latest migration files in `database/migrations/` to ensure test data uses actual column names (e.g., `cost_per_unit` instead of `unit_cost`) and only includes columns that exist in the schema.
+
+**Route Uniqueness Check (for routing tasks):** When adding or modifying routes, verify there are no duplicate route definitions that could cause ambiguity. Check `routes/web.php` and route groups to ensure each URI pattern is defined only once with a clear, canonical route name.
+
 **Design check (UI-touching tasks only):** functional correctness (tests passing) is necessary but not sufficient for a UI task — it doesn't catch generic, templated-looking design, and it doesn't catch a page that's functionally wired correctly but visually broken. For any task that adds or changes a page/component's visual design, once the browser test confirms it renders and functions correctly:
 
 1. **Use the Playwright browser skill** to actually navigate to the affected page and take a screenshot — confirm what's rendering matches what was intended, rather than inferring it from the code you just wrote. This is especially important for any UI work where "the code looks right" and "it actually renders right" have turned out to diverge before.

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::index
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::index
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::index
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::index
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\KitchenController::index
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::index
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::index
- * @see app/Http/Controllers/Admin/KitchenController.php:28
+ * @see app/Http/Controllers/Admin/KitchenController.php:29
  * @route '/kitchen'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/list'
  */
 const listc4bfd26ad0f21812692b2dbde2bb2623 = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ listc4bfd26ad0f21812692b2dbde2bb2623.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/list'
  */
 listc4bfd26ad0f21812692b2dbde2bb2623.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ listc4bfd26ad0f21812692b2dbde2bb2623.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/list'
  */
 listc4bfd26ad0f21812692b2dbde2bb2623.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -112,7 +112,7 @@ listc4bfd26ad0f21812692b2dbde2bb2623.get = (options?: RouteQueryOptions): RouteD
 })
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/list'
  */
 listc4bfd26ad0f21812692b2dbde2bb2623.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -122,7 +122,7 @@ listc4bfd26ad0f21812692b2dbde2bb2623.head = (options?: RouteQueryOptions): Route
 
     /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/list'
  */
     const listc4bfd26ad0f21812692b2dbde2bb2623Form = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -132,7 +132,7 @@ listc4bfd26ad0f21812692b2dbde2bb2623.head = (options?: RouteQueryOptions): Route
 
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/list'
  */
         listc4bfd26ad0f21812692b2dbde2bb2623Form.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -141,7 +141,7 @@ listc4bfd26ad0f21812692b2dbde2bb2623.head = (options?: RouteQueryOptions): Route
         })
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/list'
  */
         listc4bfd26ad0f21812692b2dbde2bb2623Form.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -157,7 +157,7 @@ listc4bfd26ad0f21812692b2dbde2bb2623.head = (options?: RouteQueryOptions): Route
     listc4bfd26ad0f21812692b2dbde2bb2623.form = listc4bfd26ad0f21812692b2dbde2bb2623Form
     /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/feed'
  */
 const list339bc34672e183329e79d37ca37003a8 = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -172,7 +172,7 @@ list339bc34672e183329e79d37ca37003a8.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/feed'
  */
 list339bc34672e183329e79d37ca37003a8.url = (options?: RouteQueryOptions) => {
@@ -181,7 +181,7 @@ list339bc34672e183329e79d37ca37003a8.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/feed'
  */
 list339bc34672e183329e79d37ca37003a8.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -190,7 +190,7 @@ list339bc34672e183329e79d37ca37003a8.get = (options?: RouteQueryOptions): RouteD
 })
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/feed'
  */
 list339bc34672e183329e79d37ca37003a8.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -200,7 +200,7 @@ list339bc34672e183329e79d37ca37003a8.head = (options?: RouteQueryOptions): Route
 
     /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/feed'
  */
     const list339bc34672e183329e79d37ca37003a8Form = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -210,7 +210,7 @@ list339bc34672e183329e79d37ca37003a8.head = (options?: RouteQueryOptions): Route
 
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/feed'
  */
         list339bc34672e183329e79d37ca37003a8Form.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -219,7 +219,7 @@ list339bc34672e183329e79d37ca37003a8.head = (options?: RouteQueryOptions): Route
         })
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::list
- * @see app/Http/Controllers/Admin/KitchenController.php:41
+ * @see app/Http/Controllers/Admin/KitchenController.php:42
  * @route '/kitchen/feed'
  */
         list339bc34672e183329e79d37ca37003a8Form.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -246,7 +246,7 @@ export const list = {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::show
- * @see app/Http/Controllers/Admin/KitchenController.php:72
+ * @see app/Http/Controllers/Admin/KitchenController.php:73
  * @route '/kitchen/{id}'
  */
 export const show = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -261,7 +261,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::show
- * @see app/Http/Controllers/Admin/KitchenController.php:72
+ * @see app/Http/Controllers/Admin/KitchenController.php:73
  * @route '/kitchen/{id}'
  */
 show.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -289,7 +289,7 @@ show.url = (args: { id: string | number } | [id: string | number ] | string | nu
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::show
- * @see app/Http/Controllers/Admin/KitchenController.php:72
+ * @see app/Http/Controllers/Admin/KitchenController.php:73
  * @route '/kitchen/{id}'
  */
 show.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -298,7 +298,7 @@ show.get = (args: { id: string | number } | [id: string | number ] | string | nu
 })
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::show
- * @see app/Http/Controllers/Admin/KitchenController.php:72
+ * @see app/Http/Controllers/Admin/KitchenController.php:73
  * @route '/kitchen/{id}'
  */
 show.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -308,7 +308,7 @@ show.head = (args: { id: string | number } | [id: string | number ] | string | n
 
     /**
 * @see \App\Http\Controllers\Admin\KitchenController::show
- * @see app/Http/Controllers/Admin/KitchenController.php:72
+ * @see app/Http/Controllers/Admin/KitchenController.php:73
  * @route '/kitchen/{id}'
  */
     const showForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -318,7 +318,7 @@ show.head = (args: { id: string | number } | [id: string | number ] | string | n
 
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::show
- * @see app/Http/Controllers/Admin/KitchenController.php:72
+ * @see app/Http/Controllers/Admin/KitchenController.php:73
  * @route '/kitchen/{id}'
  */
         showForm.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -327,7 +327,7 @@ show.head = (args: { id: string | number } | [id: string | number ] | string | n
         })
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::show
- * @see app/Http/Controllers/Admin/KitchenController.php:72
+ * @see app/Http/Controllers/Admin/KitchenController.php:73
  * @route '/kitchen/{id}'
  */
         showForm.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -343,7 +343,7 @@ show.head = (args: { id: string | number } | [id: string | number ] | string | n
     show.form = showForm
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::edit
- * @see app/Http/Controllers/Admin/KitchenController.php:85
+ * @see app/Http/Controllers/Admin/KitchenController.php:86
  * @route '/kitchen/{id}/edit'
  */
 export const edit = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -358,7 +358,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::edit
- * @see app/Http/Controllers/Admin/KitchenController.php:85
+ * @see app/Http/Controllers/Admin/KitchenController.php:86
  * @route '/kitchen/{id}/edit'
  */
 edit.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -386,7 +386,7 @@ edit.url = (args: { id: string | number } | [id: string | number ] | string | nu
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::edit
- * @see app/Http/Controllers/Admin/KitchenController.php:85
+ * @see app/Http/Controllers/Admin/KitchenController.php:86
  * @route '/kitchen/{id}/edit'
  */
 edit.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -395,7 +395,7 @@ edit.get = (args: { id: string | number } | [id: string | number ] | string | nu
 })
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::edit
- * @see app/Http/Controllers/Admin/KitchenController.php:85
+ * @see app/Http/Controllers/Admin/KitchenController.php:86
  * @route '/kitchen/{id}/edit'
  */
 edit.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -405,7 +405,7 @@ edit.head = (args: { id: string | number } | [id: string | number ] | string | n
 
     /**
 * @see \App\Http\Controllers\Admin\KitchenController::edit
- * @see app/Http/Controllers/Admin/KitchenController.php:85
+ * @see app/Http/Controllers/Admin/KitchenController.php:86
  * @route '/kitchen/{id}/edit'
  */
     const editForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -415,7 +415,7 @@ edit.head = (args: { id: string | number } | [id: string | number ] | string | n
 
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::edit
- * @see app/Http/Controllers/Admin/KitchenController.php:85
+ * @see app/Http/Controllers/Admin/KitchenController.php:86
  * @route '/kitchen/{id}/edit'
  */
         editForm.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -424,7 +424,7 @@ edit.head = (args: { id: string | number } | [id: string | number ] | string | n
         })
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::edit
- * @see app/Http/Controllers/Admin/KitchenController.php:85
+ * @see app/Http/Controllers/Admin/KitchenController.php:86
  * @route '/kitchen/{id}/edit'
  */
         editForm.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -440,7 +440,7 @@ edit.head = (args: { id: string | number } | [id: string | number ] | string | n
     edit.form = editForm
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::update
- * @see app/Http/Controllers/Admin/KitchenController.php:98
+ * @see app/Http/Controllers/Admin/KitchenController.php:99
  * @route '/kitchen/{id}'
  */
 export const update = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -455,7 +455,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::update
- * @see app/Http/Controllers/Admin/KitchenController.php:98
+ * @see app/Http/Controllers/Admin/KitchenController.php:99
  * @route '/kitchen/{id}'
  */
 update.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -483,7 +483,7 @@ update.url = (args: { id: string | number } | [id: string | number ] | string | 
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::update
- * @see app/Http/Controllers/Admin/KitchenController.php:98
+ * @see app/Http/Controllers/Admin/KitchenController.php:99
  * @route '/kitchen/{id}'
  */
 update.put = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -492,7 +492,7 @@ update.put = (args: { id: string | number } | [id: string | number ] | string | 
 })
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::update
- * @see app/Http/Controllers/Admin/KitchenController.php:98
+ * @see app/Http/Controllers/Admin/KitchenController.php:99
  * @route '/kitchen/{id}'
  */
 update.patch = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -502,7 +502,7 @@ update.patch = (args: { id: string | number } | [id: string | number ] | string 
 
     /**
 * @see \App\Http\Controllers\Admin\KitchenController::update
- * @see app/Http/Controllers/Admin/KitchenController.php:98
+ * @see app/Http/Controllers/Admin/KitchenController.php:99
  * @route '/kitchen/{id}'
  */
     const updateForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -517,7 +517,7 @@ update.patch = (args: { id: string | number } | [id: string | number ] | string 
 
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::update
- * @see app/Http/Controllers/Admin/KitchenController.php:98
+ * @see app/Http/Controllers/Admin/KitchenController.php:99
  * @route '/kitchen/{id}'
  */
         updateForm.put = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -531,7 +531,7 @@ update.patch = (args: { id: string | number } | [id: string | number ] | string 
         })
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::update
- * @see app/Http/Controllers/Admin/KitchenController.php:98
+ * @see app/Http/Controllers/Admin/KitchenController.php:99
  * @route '/kitchen/{id}'
  */
         updateForm.patch = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -547,7 +547,7 @@ update.patch = (args: { id: string | number } | [id: string | number ] | string 
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::destroy
- * @see app/Http/Controllers/Admin/KitchenController.php:130
+ * @see app/Http/Controllers/Admin/KitchenController.php:133
  * @route '/kitchen/{id}'
  */
 export const destroy = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -562,7 +562,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::destroy
- * @see app/Http/Controllers/Admin/KitchenController.php:130
+ * @see app/Http/Controllers/Admin/KitchenController.php:133
  * @route '/kitchen/{id}'
  */
 destroy.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -590,7 +590,7 @@ destroy.url = (args: { id: string | number } | [id: string | number ] | string |
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::destroy
- * @see app/Http/Controllers/Admin/KitchenController.php:130
+ * @see app/Http/Controllers/Admin/KitchenController.php:133
  * @route '/kitchen/{id}'
  */
 destroy.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -600,7 +600,7 @@ destroy.delete = (args: { id: string | number } | [id: string | number ] | strin
 
     /**
 * @see \App\Http\Controllers\Admin\KitchenController::destroy
- * @see app/Http/Controllers/Admin/KitchenController.php:130
+ * @see app/Http/Controllers/Admin/KitchenController.php:133
  * @route '/kitchen/{id}'
  */
     const destroyForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -615,7 +615,7 @@ destroy.delete = (args: { id: string | number } | [id: string | number ] | strin
 
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::destroy
- * @see app/Http/Controllers/Admin/KitchenController.php:130
+ * @see app/Http/Controllers/Admin/KitchenController.php:133
  * @route '/kitchen/{id}'
  */
         destroyForm.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -631,7 +631,7 @@ destroy.delete = (args: { id: string | number } | [id: string | number ] | strin
     destroy.form = destroyForm
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::bump
- * @see app/Http/Controllers/Admin/KitchenController.php:152
+ * @see app/Http/Controllers/Admin/KitchenController.php:157
  * @route '/kitchen/orders/{id}/bump'
  */
 export const bump = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -646,7 +646,7 @@ bump.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::bump
- * @see app/Http/Controllers/Admin/KitchenController.php:152
+ * @see app/Http/Controllers/Admin/KitchenController.php:157
  * @route '/kitchen/orders/{id}/bump'
  */
 bump.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -674,7 +674,7 @@ bump.url = (args: { id: string | number } | [id: string | number ] | string | nu
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::bump
- * @see app/Http/Controllers/Admin/KitchenController.php:152
+ * @see app/Http/Controllers/Admin/KitchenController.php:157
  * @route '/kitchen/orders/{id}/bump'
  */
 bump.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -684,7 +684,7 @@ bump.post = (args: { id: string | number } | [id: string | number ] | string | n
 
     /**
 * @see \App\Http\Controllers\Admin\KitchenController::bump
- * @see app/Http/Controllers/Admin/KitchenController.php:152
+ * @see app/Http/Controllers/Admin/KitchenController.php:157
  * @route '/kitchen/orders/{id}/bump'
  */
     const bumpForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -694,7 +694,7 @@ bump.post = (args: { id: string | number } | [id: string | number ] | string | n
 
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::bump
- * @see app/Http/Controllers/Admin/KitchenController.php:152
+ * @see app/Http/Controllers/Admin/KitchenController.php:157
  * @route '/kitchen/orders/{id}/bump'
  */
         bumpForm.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -705,7 +705,7 @@ bump.post = (args: { id: string | number } | [id: string | number ] | string | n
     bump.form = bumpForm
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::updateStatus
- * @see app/Http/Controllers/Admin/KitchenController.php:191
+ * @see app/Http/Controllers/Admin/KitchenController.php:198
  * @route '/kitchen/orders/{id}/status'
  */
 export const updateStatus = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -720,7 +720,7 @@ updateStatus.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::updateStatus
- * @see app/Http/Controllers/Admin/KitchenController.php:191
+ * @see app/Http/Controllers/Admin/KitchenController.php:198
  * @route '/kitchen/orders/{id}/status'
  */
 updateStatus.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -748,7 +748,7 @@ updateStatus.url = (args: { id: string | number } | [id: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\Admin\KitchenController::updateStatus
- * @see app/Http/Controllers/Admin/KitchenController.php:191
+ * @see app/Http/Controllers/Admin/KitchenController.php:198
  * @route '/kitchen/orders/{id}/status'
  */
 updateStatus.patch = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -758,7 +758,7 @@ updateStatus.patch = (args: { id: string | number } | [id: string | number ] | s
 
     /**
 * @see \App\Http\Controllers\Admin\KitchenController::updateStatus
- * @see app/Http/Controllers/Admin/KitchenController.php:191
+ * @see app/Http/Controllers/Admin/KitchenController.php:198
  * @route '/kitchen/orders/{id}/status'
  */
     const updateStatusForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -773,7 +773,7 @@ updateStatus.patch = (args: { id: string | number } | [id: string | number ] | s
 
             /**
 * @see \App\Http\Controllers\Admin\KitchenController::updateStatus
- * @see app/Http/Controllers/Admin/KitchenController.php:191
+ * @see app/Http/Controllers/Admin/KitchenController.php:198
  * @route '/kitchen/orders/{id}/status'
  */
         updateStatusForm.patch = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

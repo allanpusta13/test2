@@ -1,7 +1,7 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
-* @see \Illuminate\Broadcasting\BroadcastController::authenticate
- * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
+* @see \App\Http\Controllers\BroadcastingController::authenticate
+ * @see app/Http/Controllers/BroadcastingController.php:26
  * @route '/broadcasting/auth'
  */
 export const authenticate = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -15,8 +15,8 @@ authenticate.definition = {
 } satisfies RouteDefinition<["get","post","head"]>
 
 /**
-* @see \Illuminate\Broadcasting\BroadcastController::authenticate
- * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
+* @see \App\Http\Controllers\BroadcastingController::authenticate
+ * @see app/Http/Controllers/BroadcastingController.php:26
  * @route '/broadcasting/auth'
  */
 authenticate.url = (options?: RouteQueryOptions) => {
@@ -24,8 +24,8 @@ authenticate.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see \Illuminate\Broadcasting\BroadcastController::authenticate
- * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
+* @see \App\Http\Controllers\BroadcastingController::authenticate
+ * @see app/Http/Controllers/BroadcastingController.php:26
  * @route '/broadcasting/auth'
  */
 authenticate.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -33,8 +33,8 @@ authenticate.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
-* @see \Illuminate\Broadcasting\BroadcastController::authenticate
- * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
+* @see \App\Http\Controllers\BroadcastingController::authenticate
+ * @see app/Http/Controllers/BroadcastingController.php:26
  * @route '/broadcasting/auth'
  */
 authenticate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -42,8 +42,8 @@ authenticate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 /**
-* @see \Illuminate\Broadcasting\BroadcastController::authenticate
- * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
+* @see \App\Http\Controllers\BroadcastingController::authenticate
+ * @see app/Http/Controllers/BroadcastingController.php:26
  * @route '/broadcasting/auth'
  */
 authenticate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -52,8 +52,8 @@ authenticate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
-* @see \Illuminate\Broadcasting\BroadcastController::authenticate
- * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
+* @see \App\Http\Controllers\BroadcastingController::authenticate
+ * @see app/Http/Controllers/BroadcastingController.php:26
  * @route '/broadcasting/auth'
  */
     const authenticateForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -62,8 +62,8 @@ authenticate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
-* @see \Illuminate\Broadcasting\BroadcastController::authenticate
- * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
+* @see \App\Http\Controllers\BroadcastingController::authenticate
+ * @see app/Http/Controllers/BroadcastingController.php:26
  * @route '/broadcasting/auth'
  */
         authenticateForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -71,8 +71,8 @@ authenticate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
-* @see \Illuminate\Broadcasting\BroadcastController::authenticate
- * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
+* @see \App\Http\Controllers\BroadcastingController::authenticate
+ * @see app/Http/Controllers/BroadcastingController.php:26
  * @route '/broadcasting/auth'
  */
         authenticateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -80,8 +80,8 @@ authenticate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'post',
         })
             /**
-* @see \Illuminate\Broadcasting\BroadcastController::authenticate
- * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
+* @see \App\Http\Controllers\BroadcastingController::authenticate
+ * @see app/Http/Controllers/BroadcastingController.php:26
  * @route '/broadcasting/auth'
  */
         authenticateForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -95,6 +95,6 @@ authenticate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
     
     authenticate.form = authenticateForm
-const BroadcastController = { authenticate }
+const BroadcastingController = { authenticate }
 
-export default BroadcastController
+export default BroadcastingController
